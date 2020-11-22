@@ -28,8 +28,8 @@ func doSearch(searchTerm string) {
 				searchStatusLabel.SetText("Results:")
 				for _, result := range results {
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",
-						utils.EnforceSize(result.Title, 30),
-						utils.EnforceSize(result.Uploader, 20),
+						utils.EnforceSize(result.Title, 40),
+						utils.EnforceSize(result.Uploader, 30),
 						result.Duration,
 					))
 					utils.HandleError(err, "Cannot create label")
