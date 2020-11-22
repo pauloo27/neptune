@@ -1,3 +1,7 @@
+github.com/gotk3/gotk3 v0.4.0 h1:TIuhyQitGeRTxOQIV3AJlYtEWWJpC74JHwAIsxlH8MU=
+github.com/gotk3/gotk3 v0.4.0/go.mod h1:Eew3QBwAOBTrfFFDmsDE5wZWbcagBL1NUslj1GhRveo=
+github.com/gotk3/gotk3 v0.5.0 h1:GOkq4cFgAfeK6YAukLi64bz8zPayZKeCSSRr4mcFReQ=
+github.com/gotk3/gotk3 v0.5.0/go.mod h1:/hqFpkNa9T3JgNAE2fLvCdov7c5bw//FHNZrZ3Uv9/Q=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.1 h1:g39TucaRWyV3dwDO++eEc6qf8TVIQ/Da48WmqjZ3i7E=

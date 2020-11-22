@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Pauloo27/my-tune/db"
+	"github.com/Pauloo27/my-tune/gui/app"
 	"github.com/Pauloo27/my-tune/utils"
 )
 
@@ -25,4 +26,6 @@ func main() {
 	}
 
 	db.Connect(dataFolder)
+
+	app.Start()
 }
