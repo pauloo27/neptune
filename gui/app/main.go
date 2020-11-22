@@ -26,23 +26,6 @@ func Start() {
 
 	baseContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, boxSpacing)
 
-	// search bar
-	searchBarContainer, err := gtk.HeaderBarNew()
-	utils.HandleError(err, "Cannot create header bar")
-
-	searchBarContainer.SetShowCloseButton(false)
-
-	searchInput, err := gtk.EntryNew()
-	utils.HandleError(err, "Cannot create entry")
-
-	searchInput.SetPlaceholderText("Search YouTube")
-	searchInput.SetHExpand(true)
-
-	searchButton, err := gtk.ButtonNewFromIconName("search", gtk.ICON_SIZE_BUTTON)
-
-	searchBarContainer.PackStart(searchInput)
-	searchBarContainer.PackStart(searchButton)
-
 	// main content container
 	mainContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, boxSpacing)
 	utils.HandleError(err, "Cannot create box")
@@ -53,7 +36,7 @@ func Start() {
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(searchBarContainer, false, false, boxSpacing)
+	baseContainer.PackStart(CreateSearchHeader(), false, false, boxSpacing)
 	baseContainer.PackEnd(mainContainer, true, true, boxSpacing)
 
 	win.SetDefaultSize(800, 600)
