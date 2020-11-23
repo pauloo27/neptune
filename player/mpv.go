@@ -34,5 +34,7 @@ func Initialize() {
 }
 
 func Play(result *youtube.YouTubeResult) error {
-	return mpvInstance.Command([]string{"loadfile", result.URL()})
+	err := mpvInstance.Command([]string{"loadfile", result.URL()})
+	callHooks(HOOK_FILE_LOADED)
+	return err
 }
