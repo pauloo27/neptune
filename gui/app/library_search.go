@@ -15,6 +15,17 @@ func doSearch(searchTerm string) {
 		return
 	}
 
+	children := searchResultsContainer.GetChildren()
+
+	id := 0
+	children.Foreach(func(item interface{}) {
+		wid := item.(*gtk.Widget)
+		// ignore the label
+		if id != 0 {
+			wid.Destroy()
+		}
+		id++
+	})
 	searchStatusLabel.SetText("Searching for " + searchTerm)
 
 	go func() {
