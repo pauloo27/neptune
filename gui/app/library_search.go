@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/Pauloo27/my-tune/youtube"
 	"github.com/gotk3/gotk3/glib"
@@ -43,6 +44,12 @@ func doSearch(searchTerm string) {
 
 					playButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
 					utils.HandleError(err, "Cannot create label")
+
+					//  result, at the end of the for, will be the last array element
+					currentResult := result
+					playButton.Connect("clicked", func() {
+						player.Play(currentResult)
+					})
 
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",
 						utils.EnforceSize(result.Title, 40),
