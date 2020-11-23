@@ -38,14 +38,23 @@ func doSearch(searchTerm string) {
 			glib.IdleAdd(func() {
 				searchStatusLabel.SetText("Results:")
 				for _, result := range results {
+					resultContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
+					utils.HandleError(err, "Cannot create label")
+
+					playButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
+					utils.HandleError(err, "Cannot create label")
+
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",
 						utils.EnforceSize(result.Title, 40),
-						utils.EnforceSize(result.Uploader, 30),
+						utils.EnforceSize(result.Uploader, 20),
 						result.Duration,
 					))
 					utils.HandleError(err, "Cannot create label")
 
-					searchResultsContainer.PackStart(label, false, false, 1)
+					resultContainer.PackStart(playButton, false, false, 1)
+					resultContainer.PackStart(label, false, false, 1)
+
+					searchResultsContainer.PackStart(resultContainer, false, false, 1)
 				}
 				searchResultsContainer.ShowAll()
 			})
