@@ -1,9 +1,15 @@
 package player
 
 import (
+	"math"
+
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/Pauloo27/my-tune/youtube"
 	"github.com/YouROK/go-mpv/mpv"
+)
+
+const (
+	maxVolume = 150.0
 )
 
 var MpvInstance *mpv.Mpv
@@ -31,7 +37,7 @@ func Initialize() {
 	utils.HandleError(err, "Cannot set mpv volume option")
 
 	// set default volume value
-	err = MpvInstance.SetOption("volume-max", mpv.FORMAT_DOUBLE, 150.0)
+	err = MpvInstance.SetOption("volume-max", mpv.FORMAT_DOUBLE, maxVolume)
 	utils.HandleError(err, "Cannot set mpv volume-max option")
 
 	// set quality to worst
@@ -49,15 +55,16 @@ func Initialize() {
 	}
 
 	// start the player
-	MpvInstance.Initialize()
+	err = MpvInstance.Initialize()
+	utils.HandleError(err, "Cannot initialize mpv")
 
-	callHooks(HOOK_PLAYER_INITIALIZED)
+	callHooks(HOOK_PLAYER_INITIALIZED, err)
 }
 
 func Load(result *youtube.YoutubeEntry) error {
 	State.Playing = result
 	err := MpvInstance.Command([]string{"loadfile", result.URL()})
-	callHooks(HOOK_FILE_LOADED)
+	callHooks(HOOK_FILE_LOADED, err, result)
 	return err
 }
 
@@ -71,18 +78,19 @@ func PlayPause() error {
 
 func Pause() error {
 	err := MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, true)
-	callHooks(HOOK_PLAYBACK_PAUSED)
+	callHooks(HOOK_PLAYBACK_PAUSED, err)
 	return err
 }
 
 func Play() error {
 	err := MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, false)
-	callHooks(HOOK_PLAYBACK_RESUMED)
+	callHooks(HOOK_PLAYBACK_RESUMED, err)
 	return err
 }
 
 func SetVolume(volume float64) error {
+	volume = math.Min(maxVolume, volume)
 	err := MpvInstance.SetProperty("volume", mpv.FORMAT_DOUBLE, volume)
-	callHooks(HOOK_VOLUME_CHANGED)
+	callHooks(HOOK_VOLUME_CHANGED, err, volume)
 	return err
 }

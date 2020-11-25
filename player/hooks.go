@@ -8,7 +8,7 @@ const (
 	HOOK_VOLUME_CHANGED
 )
 
-type HookCallback func()
+type HookCallback func(err error, params ...interface{})
 
 var hooks = make(map[int][]*HookCallback)
 
@@ -20,10 +20,10 @@ func RegisterHook(hookType int, cb HookCallback) {
 	}
 }
 
-func callHooks(hookType int) {
+func callHooks(hookType int, err error, params ...interface{}) {
 	if hooks, ok := hooks[hookType]; ok {
 		for _, hook := range hooks {
-			(*hook)()
+			(*hook)(err, params...)
 		}
 	}
 }

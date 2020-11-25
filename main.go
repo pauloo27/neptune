@@ -32,8 +32,8 @@ func main() {
 	db.Connect(dataFolder)
 
 	// add hook (not useful yet)
-	player.RegisterHook(player.HOOK_PLAYER_INITIALIZED, func() {
-		fmt.Println("The player was initialized!")
+	player.RegisterHook(player.HOOK_PLAYER_INITIALIZED, func(err error, params ...interface{}) {
+		fmt.Println("The player was initialized")
 	})
 
 	// start backend player

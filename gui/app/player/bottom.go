@@ -26,8 +26,16 @@ func createVolumeController() *gtk.Box {
 	volumeController, err := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0.0, 100.0, 1.0)
 	utils.HandleError(err, "Cannot create box")
 
-	volumeController.SetValue(50.0)
 	volumeController.SetDrawValue(false)
+	volumeController.SetValue(player.State.Volume)
+
+	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(err error, params ...interface{}) {
+		volume := params[0].(float64)
+		if volume != volumeController.GetValue() {
+			volumeController.SetValue(volume)
+		}
+	})
+
 	volumeController.Connect("value-changed", func() {
 		player.SetVolume(volumeController.GetValue())
 	})
