@@ -75,8 +75,24 @@ func createButtonsContainer() *gtk.Box {
 	buttonsContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
 	utils.HandleError(err, "Cannot creat ebox")
 
-	pauseButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
+	pausedIcon, err := gtk.ImageNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
+	playingIcon, err := gtk.ImageNewFromIconName("media-playback-pause", gtk.ICON_SIZE_BUTTON)
+
+	pauseButton, err := gtk.ButtonNew()
 	utils.HandleError(err, "Cannot create button")
+
+	pauseButton.SetImage(playingIcon)
+
+	player.RegisterHook(player.HOOK_PLAYBACK_PAUSED, func(err error, params ...interface{}) {
+		pauseButton.SetImage(pausedIcon)
+	})
+	player.RegisterHook(player.HOOK_PLAYBACK_RESUMED, func(err error, params ...interface{}) {
+		pauseButton.SetImage(playingIcon)
+	})
+
+	pauseButton.Connect("clicked", func() {
+		player.PlayPause()
+	})
 
 	buttonsContainer.SetHAlign(gtk.ALIGN_CENTER)
 
