@@ -6,10 +6,10 @@ import (
 )
 
 func createPlayer() *gtk.Box {
-	playerContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
+	playerContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 0)
 	utils.HandleError(err, "Cannot create box")
 
-	//playerContainer.PackEnd(bottomContainer, false, false, 1)
+	playerContainer.PackEnd(createPlayerBottom(), false, false, 0)
 
 	return playerContainer
 }
