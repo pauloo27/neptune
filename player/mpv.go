@@ -37,6 +37,7 @@ func Initialize() {
 	// create the state
 	State = &PlayerState{
 		false,
+		nil,
 	}
 
 	// start the player
@@ -45,7 +46,8 @@ func Initialize() {
 	callHooks(HOOK_PLAYER_INITIALIZED)
 }
 
-func Load(result *youtube.YouTubeResult) error {
+func Load(result *youtube.YoutubeEntry) error {
+	State.Playing = result
 	err := MpvInstance.Command([]string{"loadfile", result.URL()})
 	callHooks(HOOK_FILE_LOADED)
 	return err

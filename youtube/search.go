@@ -10,12 +10,12 @@ import (
 	"github.com/buger/jsonparser"
 )
 
-type YouTubeResult struct {
+type YoutubeEntry struct {
 	Title, Uploader, Duration, ID string
 	Live                          bool
 }
 
-func (result *YouTubeResult) URL() string {
+func (result *YoutubeEntry) URL() string {
 	return fmt.Sprintf("https://youtube.com/watch?v=%s", result.ID)
 }
 
@@ -25,7 +25,7 @@ func getContent(data []byte, index int) []byte {
 	return contents
 }
 
-func SearchFor(searchTerm string, limit int) ([]*YouTubeResult, error) {
+func SearchFor(searchTerm string, limit int) ([]*YoutubeEntry, error) {
 	url := fmt.Sprintf("https://www.youtube.com/results?search_query=%s", url.QueryEscape(searchTerm))
 
 	client := &http.Client{}
@@ -76,7 +76,7 @@ func SearchFor(searchTerm string, limit int) ([]*YouTubeResult, error) {
 		}
 	}
 
-	results := []*YouTubeResult{}
+	results := []*YoutubeEntry{}
 
 	_, err = jsonparser.ArrayEach(contents, func(value []byte, t jsonparser.ValueType, i int, err error) {
 		if limit > 0 && len(results) >= limit {
@@ -106,7 +106,7 @@ func SearchFor(searchTerm string, limit int) ([]*YouTubeResult, error) {
 			live = true
 		}
 
-		results = append(results, &YouTubeResult{
+		results = append(results, &YoutubeEntry{
 			Title:    title,
 			Uploader: uploader,
 			Duration: duration,

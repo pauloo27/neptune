@@ -27,12 +27,12 @@ func Start() {
 	utils.HandleError(err, "Cannot create box")
 
 	mainContainer.SetHomogeneous(true)
-	mainContainer.PackStart(CreatePlayer(), false, true, 1)
-	mainContainer.PackEnd(CreateLibrary(), false, true, 1)
+	mainContainer.PackStart(createPlayer(), false, true, 1)
+	mainContainer.PackEnd(createLibrary(), false, true, 1)
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(CreateSearchHeader(), false, false, 1)
+	baseContainer.PackStart(createSearchHeader(), false, false, 1)
 	baseContainer.PackEnd(mainContainer, true, true, 1)
 
 	win.SetDefaultSize(800, 600)

@@ -5,12 +5,12 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-func CreateLibrary() *gtk.Notebook {
+func createLibrary() *gtk.Notebook {
 	libraryContainer, err := gtk.NotebookNew()
 	utils.HandleError(err, "Cannot create notebook")
 
 	searchLabel, err := gtk.LabelNew("Search")
-	libraryContainer.AppendPage(CreateSearchPage(), searchLabel)
+	libraryContainer.AppendPage(createSearchPage(), searchLabel)
 
 	return libraryContainer
 }

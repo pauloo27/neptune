@@ -73,7 +73,7 @@ func doSearch(searchTerm string) {
 	}()
 }
 
-func CreateSearchHeader() *gtk.HeaderBar {
+func createSearchHeader() *gtk.HeaderBar {
 	searchBarContainer, err := gtk.HeaderBarNew()
 	utils.HandleError(err, "Cannot create header bar")
 
@@ -104,7 +104,7 @@ func CreateSearchHeader() *gtk.HeaderBar {
 	return searchBarContainer
 }
 
-func CreateSearchPage() *gtk.Box {
+func createSearchPage() *gtk.Box {
 	var err error
 	searchResultsContainer, err = gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 	utils.HandleError(err, "Cannot create box")
