@@ -12,6 +12,8 @@ var State *PlayerState
 func Initialize() {
 	var err error
 
+	initialVolume := 50.0
+
 	// create a mpv instance
 	MpvInstance = mpv.Create()
 
@@ -24,12 +26,17 @@ func Initialize() {
 	err = MpvInstance.SetOptionString("cache", "no")
 	utils.HandleError(err, "Cannot set mpv cache option")
 
+	// set default volume value
+	err = MpvInstance.SetOption("volume", mpv.FORMAT_DOUBLE, initialVolume)
+	utils.HandleError(err, "Cannot set mpv volume option")
+
+	// set default volume value
+	err = MpvInstance.SetOption("volume-max", mpv.FORMAT_DOUBLE, 150.0)
+	utils.HandleError(err, "Cannot set mpv volume-max option")
+
 	// set quality to worst
 	err = MpvInstance.SetOptionString("ytdl-format", "worst")
 	utils.HandleError(err, "Cannot set mpv ytdl-format option")
-
-	// add observers
-	//MpvInstance.ObserveProperty(1, "pause", mpv.FORMAT_FLAG)
 
 	// start event listener
 	startEventHandler()
@@ -38,6 +45,7 @@ func Initialize() {
 	State = &PlayerState{
 		false,
 		nil,
+		initialVolume,
 	}
 
 	// start the player
@@ -70,5 +78,11 @@ func Pause() error {
 func Play() error {
 	err := MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, false)
 	callHooks(HOOK_PLAYBACK_RESUMED)
+	return err
+}
+
+func SetVolume(volume float64) error {
+	err := MpvInstance.SetProperty("volume", mpv.FORMAT_DOUBLE, volume)
+	callHooks(HOOK_VOLUME_CHANGED)
 	return err
 }

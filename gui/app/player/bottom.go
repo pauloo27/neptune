@@ -1,6 +1,7 @@
 package player
 
 import (
+	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
@@ -22,10 +23,14 @@ func createVolumeController() *gtk.Box {
 	volumeIcon, err := gtk.ImageNewFromIconName("audio-volume-medium", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create image")
 
-	volumeController, err := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0, 100, 1)
+	volumeController, err := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0.0, 100.0, 1.0)
 	utils.HandleError(err, "Cannot create box")
 
+	volumeController.SetValue(50.0)
 	volumeController.SetDrawValue(false)
+	volumeController.Connect("value-changed", func() {
+		player.SetVolume(volumeController.GetValue())
+	})
 
 	volumeContainer.PackStart(volumeIcon, false, false, 0)
 	volumeContainer.PackEnd(volumeController, true, true, 0)
