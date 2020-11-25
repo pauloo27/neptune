@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/Pauloo27/my-tune/db"
 	"github.com/Pauloo27/my-tune/gui/app"
@@ -19,7 +20,7 @@ func main() {
 	home, err := os.UserHomeDir()
 	utils.HandleError(err, "Cannot get user home")
 
-	dataFolder := home + "/.cache/my-tune"
+	dataFolder := path.Join(home, ".cache", "my-tune")
 
 	_, err = os.Stat(dataFolder)
 	if os.IsNotExist(err) {

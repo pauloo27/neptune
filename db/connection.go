@@ -1,6 +1,8 @@
 package db
 
 import (
+	"path"
+
 	"github.com/Pauloo27/my-tune/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -9,7 +11,7 @@ import (
 var Database *gorm.DB
 
 func Connect(dataFolder string) {
-	db, err := gorm.Open(sqlite.Open(dataFolder+"/db.sqlite"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(path.Join(dataFolder, "db.sqlite")), &gorm.Config{})
 	utils.HandleError(err, "Cannot connect to db")
 	Database = db
 
