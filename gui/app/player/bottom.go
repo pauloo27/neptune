@@ -1,6 +1,8 @@
 package player
 
 import (
+	"time"
+
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
@@ -47,16 +49,21 @@ func createVolumeController() *gtk.Box {
 }
 
 func createDurationLabel() *gtk.Label {
-	durationLabel, err := gtk.LabelNew("3:21")
+	durationLabel, err := gtk.LabelNew("--:--")
 	utils.HandleError(err, "Cannot create label")
 
 	durationLabel.SetHAlign(gtk.ALIGN_END)
+	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
+		duration := params[0].(float64)
+
+		durationLabel.SetText(utils.FormatDuration(time.Duration(duration) * time.Second))
+	})
 
 	return durationLabel
 }
 
 func createPositionLabel() *gtk.Label {
-	positonLabel, err := gtk.LabelNew("1:23")
+	positonLabel, err := gtk.LabelNew("--:--")
 	utils.HandleError(err, "Cannot create label")
 
 	positonLabel.SetHAlign(gtk.ALIGN_START)

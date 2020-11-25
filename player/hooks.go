@@ -2,10 +2,11 @@ package player
 
 const (
 	HOOK_PLAYER_INITIALIZED = iota
-	HOOK_FILE_LOADED
+	HOOK_FILE_LOAD_STARTED
 	HOOK_PLAYBACK_PAUSED
 	HOOK_PLAYBACK_RESUMED
 	HOOK_VOLUME_CHANGED
+	HOOK_FILE_LOADED
 )
 
 type HookCallback func(err error, params ...interface{})

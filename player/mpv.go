@@ -52,6 +52,7 @@ func Initialize() {
 		false,
 		nil,
 		initialVolume,
+		0.0,
 	}
 
 	// start the player
@@ -64,7 +65,7 @@ func Initialize() {
 func Load(result *youtube.YoutubeEntry) error {
 	State.Playing = result
 	err := MpvInstance.Command([]string{"loadfile", result.URL()})
-	callHooks(HOOK_FILE_LOADED, err, result)
+	callHooks(HOOK_FILE_LOAD_STARTED, err, result)
 	return err
 }
 
@@ -93,4 +94,9 @@ func SetVolume(volume float64) error {
 	err := MpvInstance.SetProperty("volume", mpv.FORMAT_DOUBLE, volume)
 	callHooks(HOOK_VOLUME_CHANGED, err, volume)
 	return err
+}
+
+func GetPosition() (float64, error) {
+	position, err := MpvInstance.GetProperty("time-pos", mpv.FORMAT_DOUBLE)
+	return position.(float64), err
 }
