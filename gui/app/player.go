@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
@@ -20,7 +18,7 @@ func CreatePlayer() *gtk.Box {
 	playPauseButton.SetHAlign(gtk.ALIGN_CENTER)
 
 	playPauseButton.Connect("clicked", func() {
-		fmt.Println(player.Pause())
+		player.PlayPause()
 	})
 
 	buttonsContainer.PackStart(playPauseButton, true, true, 0)
