@@ -1,18 +1,31 @@
 package app
 
 import (
+	"fmt"
+
+	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
 
 func CreatePlayer() *gtk.Box {
-	playerContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, boxSpacing)
+	playerContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 	utils.HandleError(err, "Cannot create box")
 
-	l, err := gtk.LabelNew("Hello")
-	utils.HandleError(err, "Cannot create label")
+	buttonsContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
+	utils.HandleError(err, "Cannot create box")
 
-	playerContainer.PackStart(l, false, false, 0)
+	playPauseButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+	playPauseButton.SetHAlign(gtk.ALIGN_CENTER)
+
+	playPauseButton.Connect("clicked", func() {
+		fmt.Println(player.Pause())
+	})
+
+	buttonsContainer.PackStart(playPauseButton, true, true, 0)
+
+	playerContainer.PackEnd(buttonsContainer, false, false, 0)
 
 	return playerContainer
 }

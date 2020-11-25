@@ -38,3 +38,9 @@ func Play(result *youtube.YouTubeResult) error {
 	callHooks(HOOK_FILE_LOADED)
 	return err
 }
+
+func Pause() error {
+	err := mpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, true)
+	callHooks(HOOK_PLAYBACK_PAUSED)
+	return err
+}

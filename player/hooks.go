@@ -3,6 +3,7 @@ package player
 const (
 	HOOK_PLAYER_INITIALIZED = iota
 	HOOK_FILE_LOADED
+	HOOK_PLAYBACK_PAUSED
 )
 
 type HookCallback func()

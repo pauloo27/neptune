@@ -5,10 +5,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const (
-	boxSpacing = 1
-)
-
 var appWin *gtk.Window
 
 func Start() {
@@ -24,20 +20,20 @@ func Start() {
 
 	appWin = win
 
-	baseContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, boxSpacing)
+	baseContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 
 	// main content container
-	mainContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, boxSpacing)
+	mainContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
 	utils.HandleError(err, "Cannot create box")
 
 	mainContainer.SetHomogeneous(true)
-	mainContainer.PackStart(CreatePlayer(), false, true, boxSpacing)
-	mainContainer.PackEnd(CreateLibrary(), false, true, boxSpacing)
+	mainContainer.PackStart(CreatePlayer(), false, true, 1)
+	mainContainer.PackEnd(CreateLibrary(), false, true, 1)
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(CreateSearchHeader(), false, false, boxSpacing)
-	baseContainer.PackEnd(mainContainer, true, true, boxSpacing)
+	baseContainer.PackStart(CreateSearchHeader(), false, false, 1)
+	baseContainer.PackEnd(mainContainer, true, true, 1)
 
 	win.SetDefaultSize(800, 600)
 
