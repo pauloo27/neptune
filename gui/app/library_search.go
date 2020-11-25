@@ -10,11 +10,13 @@ import (
 
 var searchResultsContainer *gtk.Box
 var searchStatusLabel *gtk.Label
+var searching = false
 
 func doSearch(searchTerm string) {
-	if searchTerm == "" {
+	if searchTerm == "" || searching {
 		return
 	}
+	searching = true
 
 	children := searchResultsContainer.GetChildren()
 
@@ -34,6 +36,7 @@ func doSearch(searchTerm string) {
 		if err != nil {
 			glib.IdleAdd(func() {
 				searchStatusLabel.SetText("Something went wrong")
+				searching = false
 			})
 		} else {
 			glib.IdleAdd(func() {
@@ -64,6 +67,7 @@ func doSearch(searchTerm string) {
 					searchResultsContainer.PackStart(resultContainer, false, false, 1)
 				}
 				searchResultsContainer.ShowAll()
+				searching = false
 			})
 		}
 	}()
