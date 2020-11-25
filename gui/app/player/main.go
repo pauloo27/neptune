@@ -1,11 +1,11 @@
-package app
+package player
 
 import (
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
 
-func createPlayer() *gtk.Box {
+func CreatePlayer() *gtk.Box {
 	playerContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 0)
 	utils.HandleError(err, "Cannot create box")
 

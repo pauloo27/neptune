@@ -1,11 +1,11 @@
-package app
+package library
 
 import (
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
 
-func createLibrary() *gtk.Notebook {
+func CreateLibrary() *gtk.Notebook {
 	libraryContainer, err := gtk.NotebookNew()
 	utils.HandleError(err, "Cannot create notebook")
 

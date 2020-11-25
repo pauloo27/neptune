@@ -1,4 +1,4 @@
-package app
+package player
 
 import (
 	"github.com/Pauloo27/my-tune/utils"

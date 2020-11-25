@@ -1,6 +1,8 @@
 package app
 
 import (
+	"github.com/Pauloo27/my-tune/gui/app/library"
+	"github.com/Pauloo27/my-tune/gui/app/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
@@ -27,12 +29,12 @@ func Start() {
 	utils.HandleError(err, "Cannot create box")
 
 	mainContainer.SetHomogeneous(true)
-	mainContainer.PackStart(createPlayer(), false, true, 1)
-	mainContainer.PackEnd(createLibrary(), false, true, 1)
+	mainContainer.PackStart(player.CreatePlayer(), false, true, 1)
+	mainContainer.PackEnd(library.CreateLibrary(), false, true, 1)
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(createSearchHeader(), false, false, 1)
+	baseContainer.PackStart(library.CreateSearchHeader(), false, false, 1)
 	baseContainer.PackEnd(mainContainer, true, true, 1)
 
 	win.SetDefaultSize(800, 600)

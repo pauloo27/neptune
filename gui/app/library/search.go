@@ -1,4 +1,4 @@
-package app
+package library
 
 import (
 	"github.com/Pauloo27/my-tune/player"
@@ -73,7 +73,7 @@ func doSearch(searchTerm string) {
 	}()
 }
 
-func createSearchHeader() *gtk.HeaderBar {
+func CreateSearchHeader() *gtk.HeaderBar {
 	searchBarContainer, err := gtk.HeaderBarNew()
 	utils.HandleError(err, "Cannot create header bar")
 
