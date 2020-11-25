@@ -20,6 +20,12 @@ func RegisterHook(hookType int, cb HookCallback) {
 	}
 }
 
+func RegisterHooks(hookTypes []int, cb HookCallback) {
+	for _, hookType := range hookTypes {
+		RegisterHook(hookType, cb)
+	}
+}
+
 func callHooks(hookType int, err error, params ...interface{}) {
 	if hooks, ok := hooks[hookType]; ok {
 		for _, hook := range hooks {
