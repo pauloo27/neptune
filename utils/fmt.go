@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"strconv"
-	"time"
 )
 
 func Fmt(format string, values ...interface{}) string {
@@ -26,8 +25,8 @@ func Pad(n int, minSize int) string {
 	return str
 }
 
-func FormatDuration(duration time.Duration) string {
-	minutes := int(duration.Seconds() / 60.0)
-	seconds := int(duration.Seconds()) % 60
+func FormatDuration(durationInSeconds float64) string {
+	minutes := int(durationInSeconds / 60.0)
+	seconds := int(durationInSeconds) % 60
 	return Fmt("%s:%s", Pad(minutes, 2), Pad(seconds, 2))
 }

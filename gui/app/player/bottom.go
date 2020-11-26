@@ -6,6 +6,7 @@ import (
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/Pauloo27/my-tune/youtube"
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
 
@@ -62,26 +63,26 @@ func createDurationLabel() *gtk.Label {
 	durationLabel.SetHAlign(gtk.ALIGN_END)
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
 		duration := params[0].(float64)
-
-		durationLabel.SetText(utils.FormatDuration(time.Duration(duration) * time.Second))
+		durationLabel.SetText(utils.FormatDuration(duration))
 	})
 
 	return durationLabel
 }
 
-func updatePosition(pos float64) {
-	positionLabel.SetText(utils.FormatDuration(time.Duration(pos) * time.Second))
-	currentPosition = pos / player.State.Duration
-	progressBar.SetValue(currentPosition)
+func updatePosition(position float64) {
+	relativePos := position / player.State.Duration
+	positionLabel.SetText(utils.FormatDuration(position))
+	progressBar.SetValue(relativePos)
+	currentPosition = relativePos
 }
 
 func progressUpdater() {
 	for {
-		timePosition, err := player.GetPosition()
+		position, err := player.GetPosition()
 		if err == nil {
-			pos := timePosition / player.State.Duration
-			progressBar.SetValue(pos)
-			currentPosition = pos
+			glib.IdleAdd(func() {
+				updatePosition(position)
+			})
 		}
 		time.Sleep(1 * time.Second)
 	}
