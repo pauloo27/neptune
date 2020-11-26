@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -17,8 +18,16 @@ func EnforceSize(text string, maxLen int) string {
 	return text[0:maxLen-3] + "..."
 }
 
+func Pad(n int, minSize int) string {
+	str := strconv.Itoa(n)
+	for len(str) < minSize {
+		str = "0" + str
+	}
+	return str
+}
+
 func FormatDuration(duration time.Duration) string {
 	minutes := int(duration.Seconds() / 60.0)
 	seconds := int(duration.Seconds()) % 60
-	return Fmt("%d:%d", minutes, seconds)
+	return Fmt("%s:%s", Pad(minutes, 2), Pad(seconds, 2))
 }

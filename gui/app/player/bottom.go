@@ -10,9 +10,12 @@ import (
 )
 
 var positionLabel *gtk.Label
+var progressBar *gtk.Scale
 
 func createProgressBar() *gtk.Scale {
-	progressBar, err := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0, 100, 1)
+	var err error
+
+	progressBar, err = gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0.0, 1.0, 0.01)
 	utils.HandleError(err, "Cannot create scale")
 
 	progressBar.SetDrawValue(false)
@@ -67,6 +70,7 @@ func createDurationLabel() *gtk.Label {
 
 func updatePosition(pos float64) {
 	positionLabel.SetText(utils.FormatDuration(time.Duration(pos) * time.Second))
+	progressBar.SetValue(pos / player.State.Duration)
 }
 
 func createPositionLabel() *gtk.Label {

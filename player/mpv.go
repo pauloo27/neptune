@@ -66,6 +66,7 @@ func Load(result *youtube.YoutubeEntry) error {
 	State.Playing = result
 	err := MpvInstance.Command([]string{"loadfile", result.URL()})
 	callHooks(HOOK_FILE_LOAD_STARTED, err, result)
+	Play()
 	return err
 }
 
