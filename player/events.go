@@ -10,7 +10,7 @@ import (
 func startEventHandler() {
 	go func() {
 		for {
-			event := MpvInstance.WaitEvent(1)
+			event := MpvInstance.WaitEvent(60)
 			switch event.Event_Id {
 			case mpv.EVENT_NONE:
 				continue
