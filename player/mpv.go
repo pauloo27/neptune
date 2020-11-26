@@ -55,6 +55,12 @@ func Initialize() {
 		0.0,
 	}
 
+	// internal hooks
+	RegisterHook(HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
+		Play()
+		ClearPlaylist()
+	})
+
 	// start the player
 	err = MpvInstance.Initialize()
 	utils.HandleError(err, "Cannot initialize mpv")
@@ -62,11 +68,14 @@ func Initialize() {
 	callHooks(HOOK_PLAYER_INITIALIZED, err)
 }
 
+func ClearPlaylist() error {
+	return MpvInstance.Command([]string{"playlist-clear"})
+}
+
 func Load(result *youtube.YoutubeEntry) error {
 	State.Playing = result
 	err := MpvInstance.Command([]string{"loadfile", result.URL()})
 	callHooks(HOOK_FILE_LOAD_STARTED, err, result)
-	Play()
 	return err
 }
 
