@@ -123,6 +123,16 @@ func createSongLabel() *gtk.Label {
 	return songLabel
 }
 
+func createTimeStampContainer() *gtk.Box {
+	timeStampContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
+	utils.HandleError(err, "Cannot create box")
+
+	timeStampContainer.PackStart(createPositionLabel(), false, false, 0)
+	timeStampContainer.PackEnd(createDurationLabel(), false, false, 0)
+
+	return timeStampContainer
+}
+
 func createButtonsContainer() *gtk.Box {
 	buttonsContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
 	utils.HandleError(err, "Cannot create box")
@@ -162,8 +172,7 @@ func createPlayerBottom() *gtk.Grid {
 	// row 1
 	bottomContainer.Attach(createProgressBar(), 0, 1, 10, 1)
 	// row 2
-	bottomContainer.Attach(createPositionLabel(), 0, 2, 2, 1)
-	bottomContainer.Attach(createDurationLabel(), 8, 2, 2, 1)
+	bottomContainer.Attach(createTimeStampContainer(), 0, 2, 10, 1)
 	// row 3
 	bottomContainer.Attach(createVolumeController(), 0, 3, 3, 1)
 	bottomContainer.Attach(createButtonsContainer(), 3, 3, 4, 1)
