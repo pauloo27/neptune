@@ -21,12 +21,6 @@ func createProgressBar() *gtk.Scale {
 
 	progressBar.SetDrawValue(false)
 	progressBar.SetHExpand(true)
-	progressBar.Connect("value-changed", func() {
-		if currentPosition == progressBar.GetValue() {
-			return
-		}
-		player.SetPosition(progressBar.GetValue() * player.State.Duration)
-	})
 
 	return progressBar
 }
@@ -81,6 +75,18 @@ func updatePosition(pos float64) {
 	progressBar.SetValue(currentPosition)
 }
 
+func progressUpdater() {
+	for {
+		timePosition, err := player.GetPosition()
+		if err == nil {
+			pos := timePosition / player.State.Duration
+			progressBar.SetValue(pos)
+			currentPosition = pos
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+
 func createPositionLabel() *gtk.Label {
 	var err error
 	positionLabel, err = gtk.LabelNew("--:--")
@@ -88,19 +94,7 @@ func createPositionLabel() *gtk.Label {
 
 	positionLabel.SetHAlign(gtk.ALIGN_START)
 
-	/* TODO: rewrite
-	go func() {
-		for {
-			pos, err := player.GetPosition()
-			if err == nil {
-				glib.IdleAdd(func() {
-					updatePosition(pos)
-				})
-			}
-			time.Sleep(500 * time.Microsecond)
-		}
-	}()
-	*/
+	go progressUpdater()
 
 	return positionLabel
 }
