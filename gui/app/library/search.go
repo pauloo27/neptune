@@ -48,7 +48,7 @@ func doSearch(searchTerm string) {
 					playButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
 					utils.HandleError(err, "Cannot create label")
 
-					//  result, at the end of the for, will be the last array element
+					// var result, at the end of the for, will be the last array element
 					currentResult := result
 					playButton.Connect("clicked", func() {
 						player.Load(currentResult)
