@@ -5,8 +5,11 @@ import (
 
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
+
+var positionLabel *gtk.Label
 
 func createProgressBar() *gtk.Scale {
 	progressBar, err := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 0, 100, 1)
@@ -62,13 +65,30 @@ func createDurationLabel() *gtk.Label {
 	return durationLabel
 }
 
+func updatePosition(pos float64) {
+	positionLabel.SetText(utils.FormatDuration(time.Duration(pos) * time.Second))
+}
+
 func createPositionLabel() *gtk.Label {
-	positonLabel, err := gtk.LabelNew("--:--")
+	var err error
+	positionLabel, err = gtk.LabelNew("--:--")
 	utils.HandleError(err, "Cannot create label")
 
-	positonLabel.SetHAlign(gtk.ALIGN_START)
+	positionLabel.SetHAlign(gtk.ALIGN_START)
 
-	return positonLabel
+	go func() {
+		for {
+			pos, err := player.GetPosition()
+			if err == nil {
+				glib.IdleAdd(func() {
+					updatePosition(pos)
+				})
+			}
+			time.Sleep(500 * time.Microsecond)
+		}
+	}()
+
+	return positionLabel
 }
 
 func createSongLabel() *gtk.Label {

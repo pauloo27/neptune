@@ -98,5 +98,8 @@ func SetVolume(volume float64) error {
 
 func GetPosition() (float64, error) {
 	position, err := MpvInstance.GetProperty("time-pos", mpv.FORMAT_DOUBLE)
+	if err != nil {
+		return 0.0, err
+	}
 	return position.(float64), err
 }
