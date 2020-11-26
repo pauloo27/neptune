@@ -11,6 +11,7 @@ import (
 
 var positionLabel *gtk.Label
 var progressBar *gtk.Scale
+var currentPosition float64
 
 func createProgressBar() *gtk.Scale {
 	var err error
@@ -20,6 +21,12 @@ func createProgressBar() *gtk.Scale {
 
 	progressBar.SetDrawValue(false)
 	progressBar.SetHExpand(true)
+	progressBar.Connect("value-changed", func() {
+		if currentPosition == progressBar.GetValue() {
+			return
+		}
+		player.SetPosition(progressBar.GetValue() * player.State.Duration)
+	})
 
 	return progressBar
 }
@@ -70,7 +77,8 @@ func createDurationLabel() *gtk.Label {
 
 func updatePosition(pos float64) {
 	positionLabel.SetText(utils.FormatDuration(time.Duration(pos) * time.Second))
-	progressBar.SetValue(pos / player.State.Duration)
+	currentPosition = pos / player.State.Duration
+	progressBar.SetValue(currentPosition)
 }
 
 func createPositionLabel() *gtk.Label {

@@ -7,6 +7,7 @@ const (
 	HOOK_PLAYBACK_RESUMED
 	HOOK_VOLUME_CHANGED
 	HOOK_FILE_LOADED
+	HOOK_POSITION_CHANGED
 )
 
 type HookCallback func(err error, params ...interface{})
