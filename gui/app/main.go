@@ -22,10 +22,10 @@ func Start() {
 
 	appWin = win
 
-	baseContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
+	baseContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 0)
 
 	// main content container
-	mainContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
+	mainContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
 	utils.HandleError(err, "Cannot create box")
 
 	mainContainer.SetHomogeneous(true)
@@ -34,8 +34,8 @@ func Start() {
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(library.CreateSearchHeader(), false, false, 1)
-	baseContainer.PackEnd(mainContainer, true, true, 1)
+	baseContainer.PackStart(library.CreateSearchHeader(), false, false, 0)
+	baseContainer.PackEnd(mainContainer, true, true, 0)
 
 	win.SetDefaultSize(800, 600)
 

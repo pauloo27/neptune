@@ -5,6 +5,7 @@ import (
 
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/my-tune/youtube"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
@@ -104,8 +105,20 @@ func createPositionLabel() *gtk.Label {
 }
 
 func createSongLabel() *gtk.Label {
-	songLabel, err := gtk.LabelNew("Testing - I have no ideia")
+	songLabel, err := gtk.LabelNew("--")
 	utils.HandleError(err, "Cannot create label")
+
+	songLabel.SetHAlign(gtk.ALIGN_CENTER)
+
+	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
+		entry := params[0].(*youtube.YoutubeEntry)
+		songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
+	})
+
+	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
+		entry := player.State.Playing
+		songLabel.SetText(entry.Title)
+	})
 
 	return songLabel
 }
@@ -145,14 +158,15 @@ func createPlayerBottom() *gtk.Grid {
 	utils.HandleError(err, "Cannot create grid")
 
 	// row 0
-	bottomContainer.Attach(createProgressBar(), 0, 0, 10, 1)
+	bottomContainer.Attach(createSongLabel(), 0, 0, 10, 1)
 	// row 1
-	bottomContainer.Attach(createPositionLabel(), 0, 1, 1, 1)
-	bottomContainer.Attach(createSongLabel(), 1, 1, 8, 1)
-	bottomContainer.Attach(createDurationLabel(), 9, 1, 1, 1)
+	bottomContainer.Attach(createProgressBar(), 0, 1, 10, 1)
 	// row 2
-	bottomContainer.Attach(createVolumeController(), 0, 2, 3, 1)
-	bottomContainer.Attach(createButtonsContainer(), 3, 2, 4, 1)
+	bottomContainer.Attach(createPositionLabel(), 0, 2, 2, 1)
+	bottomContainer.Attach(createDurationLabel(), 8, 2, 2, 1)
+	// row 3
+	bottomContainer.Attach(createVolumeController(), 0, 3, 3, 1)
+	bottomContainer.Attach(createButtonsContainer(), 3, 3, 4, 1)
 
 	return bottomContainer
 }
