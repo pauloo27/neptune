@@ -6,7 +6,6 @@ import (
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
 	"github.com/Pauloo27/my-tune/youtube"
-	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
 
@@ -89,6 +88,7 @@ func createPositionLabel() *gtk.Label {
 
 	positionLabel.SetHAlign(gtk.ALIGN_START)
 
+	/* TODO: rewrite
 	go func() {
 		for {
 			pos, err := player.GetPosition()
@@ -100,6 +100,7 @@ func createPositionLabel() *gtk.Label {
 			time.Sleep(500 * time.Microsecond)
 		}
 	}()
+	*/
 
 	return positionLabel
 }
