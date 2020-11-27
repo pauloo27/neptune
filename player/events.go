@@ -3,8 +3,8 @@ package player
 import (
 	"fmt"
 
+	"github.com/Pauloo27/my-tune/player/mpv"
 	"github.com/Pauloo27/my-tune/utils"
-	"github.com/YouROK/go-mpv/mpv"
 )
 
 func startEventHandler() {
