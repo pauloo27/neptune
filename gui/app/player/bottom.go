@@ -47,9 +47,11 @@ func createVolumeController() *gtk.Box {
 
 	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(err error, params ...interface{}) {
 		volume := params[0].(float64)
-		if volume != volumeController.GetValue() {
-			volumeController.SetValue(volume)
-		}
+		glib.IdleAdd(func() {
+			if volume != volumeController.GetValue() {
+				volumeController.SetValue(volume)
+			}
+		})
 	})
 
 	volumeController.Connect("value-changed", func() {
@@ -69,7 +71,9 @@ func createDurationLabel() *gtk.Label {
 	durationLabel.SetHAlign(gtk.ALIGN_END)
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
 		duration := params[0].(float64)
-		durationLabel.SetText(utils.FormatDuration(duration))
+		glib.IdleAdd(func() {
+			durationLabel.SetText(utils.FormatDuration(duration))
+		})
 	})
 
 	return durationLabel
@@ -113,12 +117,16 @@ func createSongLabel() *gtk.Label {
 
 	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
 		entry := player.State.Playing
-		songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
+		glib.IdleAdd(func() {
+			songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
+		})
 	})
 
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
 		entry := player.State.Playing
-		songLabel.SetText(entry.Title)
+		glib.IdleAdd(func() {
+			songLabel.SetText(entry.Title)
+		})
 	})
 
 	return songLabel
@@ -147,10 +155,14 @@ func createButtonsContainer() *gtk.Box {
 	pauseButton.SetImage(playingIcon)
 
 	player.RegisterHook(player.HOOK_PLAYBACK_PAUSED, func(err error, params ...interface{}) {
-		pauseButton.SetImage(pausedIcon)
+		glib.IdleAdd(func() {
+			pauseButton.SetImage(pausedIcon)
+		})
 	})
 	player.RegisterHook(player.HOOK_PLAYBACK_RESUMED, func(err error, params ...interface{}) {
-		pauseButton.SetImage(playingIcon)
+		glib.IdleAdd(func() {
+			pauseButton.SetImage(playingIcon)
+		})
 	})
 
 	pauseButton.Connect("clicked", func() {
