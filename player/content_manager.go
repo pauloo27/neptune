@@ -6,17 +6,23 @@ import (
 	"path"
 
 	"github.com/Pauloo27/my-tune/youtube"
+	"github.com/Pauloo27/my-tune/youtubedl"
 )
 
 func PlayResult(result *youtube.YoutubeEntry) {
+	RemoveCurrentFromPlaylist()
 	State.Playing = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
 	filePath := path.Join(DataFolder, "songs", result.ID+".m4a")
 	_, err := os.Stat(filePath)
 	if os.IsNotExist(err) {
-		// TODO: Download
-		fmt.Println("Downloading file...")
-		os.Exit(-1)
+		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
+		go func() {
+			fmt.Println("Downloading file...")
+			youtubedl.DownloadResult(result, filePath)
+			LoadFile(filePath)
+		}()
+	} else {
+		LoadFile(filePath)
 	}
-	LoadFile(filePath)
 }

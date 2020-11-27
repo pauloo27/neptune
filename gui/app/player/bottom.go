@@ -5,7 +5,6 @@ import (
 
 	"github.com/Pauloo27/my-tune/player"
 	"github.com/Pauloo27/my-tune/utils"
-	"github.com/Pauloo27/my-tune/youtube"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
@@ -113,7 +112,7 @@ func createSongLabel() *gtk.Label {
 	songLabel.SetHAlign(gtk.ALIGN_CENTER)
 
 	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
-		entry := params[0].(*youtube.YoutubeEntry)
+		entry := player.State.Playing
 		songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
 	})
 

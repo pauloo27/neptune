@@ -9,6 +9,7 @@ const (
 	HOOK_VOLUME_CHANGED
 	HOOK_FILE_LOADED
 	HOOK_POSITION_CHANGED
+	HOOK_RESULT_DOWNLOAD_STARTED
 )
 
 type HookCallback func(err error, params ...interface{})
