@@ -51,7 +51,7 @@ func doSearch(searchTerm string) {
 					// var result, at the end of the for, will be the last array element
 					currentResult := result
 					playButton.Connect("clicked", func() {
-						player.Load(currentResult)
+						player.PlayResult(currentResult)
 					})
 
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",

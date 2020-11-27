@@ -4,7 +4,6 @@ import (
 	"math"
 
 	"github.com/Pauloo27/my-tune/utils"
-	"github.com/Pauloo27/my-tune/youtube"
 	"github.com/YouROK/go-mpv/mpv"
 )
 
@@ -14,9 +13,12 @@ const (
 
 var MpvInstance *mpv.Mpv
 var State *PlayerState
+var DataFolder string
 
-func Initialize() {
+func Initialize(dataFolder string) {
 	var err error
+
+	DataFolder = dataFolder
 
 	initialVolume := 50.0
 
@@ -72,10 +74,9 @@ func ClearPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-clear"})
 }
 
-func Load(result *youtube.YoutubeEntry) error {
-	State.Playing = result
-	err := MpvInstance.Command([]string{"loadfile", result.URL()})
-	callHooks(HOOK_FILE_LOAD_STARTED, err, result)
+func LoadFile(filePath string) error {
+	err := MpvInstance.Command([]string{"loadfile", filePath})
+	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
 	return err
 }
 

@@ -37,7 +37,7 @@ func main() {
 	})
 
 	// start backend player
-	player.Initialize()
+	player.Initialize(dataFolder)
 
 	// start gui
 	app.Start()
