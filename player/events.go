@@ -24,8 +24,10 @@ func startEventHandler() {
 				callHooks(HOOK_FILE_LOADED, err, duration)
 			case mpv.EVENT_PAUSE:
 				State.Paused = true
+				callHooks(HOOK_PLAYBACK_PAUSED)
 			case mpv.EVENT_UNPAUSE:
 				State.Paused = false
+				callHooks(HOOK_PLAYBACK_RESUMED)
 			default:
 				fmt.Println(event)
 			}

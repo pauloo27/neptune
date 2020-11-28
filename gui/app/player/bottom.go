@@ -45,8 +45,8 @@ func createVolumeController() *gtk.Box {
 	volumeController.SetDrawValue(false)
 	volumeController.SetValue(player.State.Volume)
 
-	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(err error, params ...interface{}) {
-		volume := params[0].(float64)
+	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(params ...interface{}) {
+		volume := params[1].(float64)
 		glib.IdleAdd(func() {
 			if volume != volumeController.GetValue() {
 				volumeController.SetValue(volume)
@@ -69,8 +69,8 @@ func createDurationLabel() *gtk.Label {
 	utils.HandleError(err, "Cannot create label")
 
 	durationLabel.SetHAlign(gtk.ALIGN_END)
-	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
-		duration := params[0].(float64)
+	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
+		duration := params[1].(float64)
 		glib.IdleAdd(func() {
 			durationLabel.SetText(utils.FormatDuration(duration))
 		})
@@ -115,14 +115,14 @@ func createSongLabel() *gtk.Label {
 
 	songLabel.SetHAlign(gtk.ALIGN_CENTER)
 
-	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
+	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
 		entry := player.State.Playing
 		glib.IdleAdd(func() {
 			songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
 		})
 	})
 
-	player.RegisterHook(player.HOOK_FILE_LOADED, func(err error, params ...interface{}) {
+	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
 		entry := player.State.Playing
 		glib.IdleAdd(func() {
 			songLabel.SetText(entry.Title)
@@ -154,12 +154,12 @@ func createButtonsContainer() *gtk.Box {
 
 	pauseButton.SetImage(playingIcon)
 
-	player.RegisterHook(player.HOOK_PLAYBACK_PAUSED, func(err error, params ...interface{}) {
+	player.RegisterHook(player.HOOK_PLAYBACK_PAUSED, func(params ...interface{}) {
 		glib.IdleAdd(func() {
 			pauseButton.SetImage(pausedIcon)
 		})
 	})
-	player.RegisterHook(player.HOOK_PLAYBACK_RESUMED, func(err error, params ...interface{}) {
+	player.RegisterHook(player.HOOK_PLAYBACK_RESUMED, func(params ...interface{}) {
 		glib.IdleAdd(func() {
 			pauseButton.SetImage(playingIcon)
 		})

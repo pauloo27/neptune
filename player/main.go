@@ -62,7 +62,7 @@ func Initialize(dataFolder string) {
 	}
 
 	// internal hooks
-	RegisterHook(HOOK_FILE_LOAD_STARTED, func(err error, params ...interface{}) {
+	RegisterHook(HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
 		Play()
 		ClearPlaylist()
 	})
@@ -97,15 +97,11 @@ func PlayPause() error {
 }
 
 func Pause() error {
-	err := MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, true)
-	callHooks(HOOK_PLAYBACK_PAUSED, err)
-	return err
+	return MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, true)
 }
 
 func Play() error {
-	err := MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, false)
-	callHooks(HOOK_PLAYBACK_RESUMED, err)
-	return err
+	return MpvInstance.SetProperty("pause", mpv.FORMAT_FLAG, false)
 }
 
 func SetVolume(volume float64) error {

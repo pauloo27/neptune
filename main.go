@@ -32,7 +32,7 @@ func main() {
 	db.Connect(dataFolder)
 
 	// add hook (not useful yet)
-	player.RegisterHook(player.HOOK_PLAYER_INITIALIZED, func(err error, params ...interface{}) {
+	player.RegisterHook(player.HOOK_PLAYER_INITIALIZED, func(params ...interface{}) {
 		fmt.Println("The player was initialized")
 	})
 

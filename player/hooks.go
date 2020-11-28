@@ -12,7 +12,7 @@ const (
 	HOOK_RESULT_DOWNLOAD_STARTED
 )
 
-type HookCallback func(err error, params ...interface{})
+type HookCallback func(params ...interface{})
 
 var hooks = make(map[int][]*HookCallback)
 
@@ -30,10 +30,10 @@ func RegisterHooks(hookTypes []int, cb HookCallback) {
 	}
 }
 
-func callHooks(hookType int, err error, params ...interface{}) {
+func callHooks(hookType int, params ...interface{}) {
 	if hooks, ok := hooks[hookType]; ok {
 		for _, hook := range hooks {
-			(*hook)(err, params...)
+			(*hook)(params...)
 		}
 	}
 }
