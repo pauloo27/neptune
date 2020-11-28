@@ -66,6 +66,9 @@ func Initialize(dataFolder string) {
 		Play()
 		ClearPlaylist()
 	})
+	RegisterHook(HOOK_VOLUME_CHANGED, func(params ...interface{}) {
+		State.Volume = params[0].(float64)
+	})
 
 	// start the player
 	err = MpvInstance.Initialize()
@@ -107,7 +110,6 @@ func Play() error {
 func SetVolume(volume float64) error {
 	volume = math.Min(maxVolume, volume)
 	err := MpvInstance.SetProperty("volume", mpv.FORMAT_DOUBLE, volume)
-	callHooks(HOOK_VOLUME_CHANGED, err, volume)
 	return err
 }
 

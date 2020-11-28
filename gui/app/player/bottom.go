@@ -46,7 +46,7 @@ func createVolumeController() *gtk.Box {
 	volumeController.SetValue(player.State.Volume)
 
 	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(params ...interface{}) {
-		volume := params[1].(float64)
+		volume := params[0].(float64)
 		glib.IdleAdd(func() {
 			if volume != volumeController.GetValue() {
 				volumeController.SetValue(volume)

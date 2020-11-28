@@ -2,10 +2,21 @@ package player
 
 import (
 	"fmt"
+	"unsafe"
 
 	"github.com/Pauloo27/my-tune/player/mpv"
 	"github.com/Pauloo27/my-tune/utils"
 )
+
+func handlePropertyChange(data *mpv.EventProperty) {
+	switch data.Name {
+	case "volume":
+		volume := *(*float64)(data.Data.(unsafe.Pointer))
+		callHooks(HOOK_VOLUME_CHANGED, volume)
+	default:
+		fmt.Printf("Property %s changed\n", data.Name)
+	}
+}
 
 func startEventHandler() {
 	go func() {
@@ -16,7 +27,7 @@ func startEventHandler() {
 				continue
 			case mpv.EVENT_PROPERTY_CHANGE:
 				data := event.Data.(*mpv.EventProperty)
-				fmt.Println(data.Name)
+				handlePropertyChange(data)
 			case mpv.EVENT_FILE_LOADED:
 				duration, err := MpvInstance.GetProperty("duration", mpv.FORMAT_DOUBLE)
 				utils.HandleError(err, "Cannot get duration")
