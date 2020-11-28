@@ -46,6 +46,10 @@ func Initialize(dataFolder string) {
 	err = MpvInstance.SetOptionString("ytdl-format", "worst")
 	utils.HandleError(err, "Cannot set mpv ytdl-format option")
 
+	// add observers
+	err = MpvInstance.ObserveProperty(0, "volume", mpv.FORMAT_DOUBLE)
+	utils.HandleError(err, "Cannot observer volume property")
+
 	// start event listener
 	startEventHandler()
 

@@ -324,7 +324,15 @@ func (m *Mpv) WaitEvent(timeout float32) *Event {
 		efr := EventEndFile{}
 		efr.Reason = EndFileReason(eef.reason)
 		efr.ErrCode = Error(eef.error)
-		e.Data = efr
+		e.Data = &efr
+	} else if e.Event_Id == EVENT_PROPERTY_CHANGE {
+		rawData := (*C.mpv_event_property)(cevent.data)
+		mep := EventProperty{
+			Name:   C.GoString(rawData.name),
+			Format: Format(rawData.format),
+			Data:   rawData.data,
+		}
+		e.Data = &mep
 	} else {
 		e.Data = cevent.data
 	}
@@ -418,6 +426,12 @@ type Event struct {
 	Error          error
 	Reply_Userdata uint64
 	Data           interface{}
+}
+
+type EventProperty struct {
+	Name   string
+	Format Format
+	Data   interface{}
 }
 
 type EventEndFile struct {

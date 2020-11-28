@@ -14,6 +14,9 @@ func startEventHandler() {
 			switch event.Event_Id {
 			case mpv.EVENT_NONE:
 				continue
+			case mpv.EVENT_PROPERTY_CHANGE:
+				data := event.Data.(*mpv.EventProperty)
+				fmt.Println(data.Name)
 			case mpv.EVENT_FILE_LOADED:
 				duration, err := MpvInstance.GetProperty("duration", mpv.FORMAT_DOUBLE)
 				utils.HandleError(err, "Cannot get duration")
