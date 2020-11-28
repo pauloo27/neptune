@@ -6,7 +6,6 @@ import (
 	"path"
 
 	"github.com/Pauloo27/my-tune/youtube"
-	"github.com/Pauloo27/my-tune/youtubedl"
 )
 
 func PlayResult(result *youtube.YoutubeEntry) {
@@ -19,7 +18,7 @@ func PlayResult(result *youtube.YoutubeEntry) {
 		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
 		go func() {
 			fmt.Println("Downloading file...")
-			youtubedl.DownloadResult(result, filePath)
+			youtube.DownloadResult(result, filePath)
 			LoadFile(filePath)
 		}()
 	} else {

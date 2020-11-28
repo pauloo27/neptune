@@ -1,9 +1,7 @@
-package youtubedl
+package youtube
 
 import (
 	"os/exec"
-
-	"github.com/Pauloo27/my-tune/youtube"
 )
 
 var youtubeDLPath = ""
@@ -12,7 +10,7 @@ func GetYouTubeDLPath() string {
 	return "/usr/bin/youtube-dl"
 }
 
-func DownloadResult(result *youtube.YoutubeEntry, filePath string) error {
+func DownloadResult(result *YoutubeEntry, filePath string) error {
 	if youtubeDLPath == "" {
 		youtubeDLPath = GetYouTubeDLPath()
 	}
