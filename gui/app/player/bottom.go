@@ -115,7 +115,7 @@ func createSongLabel() *gtk.Label {
 
 	songLabel.SetHAlign(gtk.ALIGN_CENTER)
 
-	player.RegisterHook(player.HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
+	player.RegisterHook(player.HOOK_RESULT_FETCH_STARTED, func(params ...interface{}) {
 		entry := player.State.Playing
 		glib.IdleAdd(func() {
 			songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
