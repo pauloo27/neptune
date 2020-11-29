@@ -3,7 +3,7 @@ package db
 import (
 	"path"
 
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

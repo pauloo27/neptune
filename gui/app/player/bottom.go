@@ -3,8 +3,8 @@ package player
 import (
 	"time"
 
-	"github.com/Pauloo27/my-tune/player"
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/player"
+	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )

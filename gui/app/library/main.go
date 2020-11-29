@@ -1,7 +1,7 @@
 package library
 
 import (
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
 

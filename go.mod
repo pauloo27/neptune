@@ -1,4 +1,4 @@
-module github.com/Pauloo27/my-tune
+module github.com/Pauloo27/neptune
 
 go 1.15
 

@@ -1,6 +1,6 @@
 package player
 
-import "github.com/Pauloo27/my-tune/youtube"
+import "github.com/Pauloo27/neptune/youtube"
 
 type PlayerState struct {
 	Paused   bool

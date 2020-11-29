@@ -1,9 +1,9 @@
 package library
 
 import (
-	"github.com/Pauloo27/my-tune/player"
-	"github.com/Pauloo27/my-tune/utils"
-	"github.com/Pauloo27/my-tune/youtube"
+	"github.com/Pauloo27/neptune/player"
+	"github.com/Pauloo27/neptune/utils"
+	"github.com/Pauloo27/neptune/youtube"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )

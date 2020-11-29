@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/Pauloo27/my-tune/utils"
-	"github.com/Pauloo27/my-tune/youtube"
+	"github.com/Pauloo27/neptune/utils"
+	"github.com/Pauloo27/neptune/youtube"
 )
 
 func PlayResult(result *youtube.YoutubeEntry) {

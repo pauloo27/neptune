@@ -1,9 +1,9 @@
 package app
 
 import (
-	"github.com/Pauloo27/my-tune/gui/app/library"
-	"github.com/Pauloo27/my-tune/gui/app/player"
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/gui/app/library"
+	"github.com/Pauloo27/neptune/gui/app/player"
+	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
 

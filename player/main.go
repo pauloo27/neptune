@@ -3,8 +3,8 @@ package player
 import (
 	"math"
 
-	"github.com/Pauloo27/my-tune/player/mpv"
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/player/mpv"
+	"github.com/Pauloo27/neptune/utils"
 )
 
 const (

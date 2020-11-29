@@ -5,22 +5,22 @@ import (
 	"os"
 	"path"
 
-	"github.com/Pauloo27/my-tune/db"
-	"github.com/Pauloo27/my-tune/gui/app"
-	"github.com/Pauloo27/my-tune/player"
-	"github.com/Pauloo27/my-tune/utils"
+	"github.com/Pauloo27/neptune/db"
+	"github.com/Pauloo27/neptune/gui/app"
+	"github.com/Pauloo27/neptune/player"
+	"github.com/Pauloo27/neptune/utils"
 )
 
 const version = "0.0.1"
 
 func main() {
-	fmt.Printf("Starting my-tune v%s\n", version)
+	fmt.Printf("Starting neptune v%s\n", version)
 
 	// load data folder
 	home, err := os.UserHomeDir()
 	utils.HandleError(err, "Cannot get user home")
 
-	dataFolder := path.Join(home, ".cache", "my-tune")
+	dataFolder := path.Join(home, ".cache", "neptune")
 
 	_, err = os.Stat(dataFolder)
 	if os.IsNotExist(err) {
