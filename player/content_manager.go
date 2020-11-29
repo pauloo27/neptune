@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/Pauloo27/my-tune/utils"
 	"github.com/Pauloo27/my-tune/youtube"
 )
 
@@ -18,8 +19,10 @@ func PlayResult(result *youtube.YoutubeEntry) {
 		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
 		go func() {
 			fmt.Println("Downloading file...")
-			youtube.DownloadResult(result, filePath)
+			info, err := youtube.DownloadResult(result, filePath)
+			utils.HandleError(err, "Cannot download file")
 			LoadFile(filePath)
+			fmt.Println("artist:", info.Artist, "track", info.Track)
 		}()
 	} else {
 		LoadFile(filePath)
