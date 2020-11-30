@@ -10,7 +10,9 @@ import (
 
 func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
 	var track Track
-	err := Database.First(&track, "youtube_id = ?", result.ID).Error
+	err := Database.
+		Preload("Album.Artist").Preload("Tags.Tag").
+		First(&track, "youtube_id = ?", result.ID).Error
 	return &track, err
 }
 
