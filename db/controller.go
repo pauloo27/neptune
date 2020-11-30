@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/Pauloo27/neptune/providers"
-	"github.com/Pauloo27/neptune/youtube"
+	"github.com/Pauloo27/neptune/providers/youtube"
 )
 
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) error {

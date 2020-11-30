@@ -7,8 +7,8 @@ import (
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/providers"
+	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
-	"github.com/Pauloo27/neptune/youtube"
 )
 
 func PlayResult(result *youtube.YoutubeEntry) {
