@@ -17,4 +17,7 @@ func Connect(dataFolder string) {
 
 	Database.AutoMigrate(&Artist{})
 	Database.AutoMigrate(&Album{})
+	Database.AutoMigrate(&Tag{})
+	Database.AutoMigrate(&TrackTag{})
+	Database.AutoMigrate(&Track{})
 }
