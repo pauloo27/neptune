@@ -53,7 +53,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		Length:       int(videoInfo.Duration),
 		YoutubeTitle: videoInfo.Title,
 	}
-	err = Database.Where(Track{MBID: trackInfo.MBID}).
+	err = Database.Where(Track{YoutubeID: videoInfo.ID}).
 		FirstOrCreate(&track).Error
 	if err != nil {
 		return nil, err

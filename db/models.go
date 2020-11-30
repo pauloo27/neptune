@@ -35,8 +35,8 @@ type TrackTag struct {
 
 type Track struct {
 	gorm.Model
-	MBID         string `gorm:"unique"`
-	YoutubeID    string
+	MBID         string
+	YoutubeID    string `gorm:"unique"`
 	AlbumID      uint
 	Album        Album
 	Title        string
