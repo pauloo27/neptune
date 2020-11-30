@@ -23,7 +23,8 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		MBID: trackInfo.Artist.MBID,
 		Name: trackInfo.Artist.Name,
 	}
-	err = Database.FirstOrCreate(&artist).Error
+	err = Database.Where(Artist{MBID: trackInfo.Artist.MBID}).
+		FirstOrCreate(&artist).Error
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,8 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		Title:  trackInfo.Album.Title,
 		Artist: artist,
 	}
-	err = Database.FirstOrCreate(&album).Error
+	err = Database.Where(Album{MBID: trackInfo.Album.MBID}).
+		FirstOrCreate(&album).Error
 	// download album art
 	err = utils.DownloadFile(trackInfo.Album.ImageURL,
 		path.Join(DataFolder, "albums", trackInfo.Album.MBID+".png"),
@@ -51,7 +53,8 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		Length:       int(videoInfo.Duration),
 		YoutubeTitle: videoInfo.Title,
 	}
-	err = Database.FirstOrCreate(&track).Error
+	err = Database.Where(Track{MBID: trackInfo.MBID}).
+		FirstOrCreate(&track).Error
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +63,8 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		tag := Tag{
 			Name: tagName,
 		}
-		err = Database.FirstOrCreate(&tag).Error
+		err = Database.Where(Tag{Name: tagName}).
+			FirstOrCreate(&tag).Error
 		if err != nil {
 			return nil, err
 		}
