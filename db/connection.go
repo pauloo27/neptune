@@ -9,8 +9,10 @@ import (
 )
 
 var Database *gorm.DB
+var DataFolder string
 
 func Connect(dataFolder string) {
+	DataFolder = dataFolder
 	db, err := gorm.Open(sqlite.Open(path.Join(dataFolder, "db.sqlite")), &gorm.Config{})
 	utils.HandleError(err, "Cannot connect to db")
 	Database = db

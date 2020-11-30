@@ -1,8 +1,11 @@
 package db
 
 import (
+	"path"
+
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/providers/youtube"
+	"github.com/Pauloo27/neptune/utils"
 )
 
 func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
@@ -29,6 +32,11 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		Artist: artist,
 	}
 	err = Database.FirstOrCreate(&album).Error
+	// download album art
+	err = utils.DownloadFile(trackInfo.Album.ImageURL,
+		path.Join(DataFolder, "albums", trackInfo.Album.MBID+".png"),
+	)
+	utils.HandleError(err, "Cannot download album image")
 	if err != nil {
 		return nil, err
 	}

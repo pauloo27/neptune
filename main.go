@@ -28,6 +28,13 @@ func main() {
 		utils.HandleError(err, "Cannot create data folder")
 	}
 
+	albumsCacheFolder := path.Join(dataFolder, "albums")
+	_, err = os.Stat(albumsCacheFolder)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(albumsCacheFolder, 0744)
+		utils.HandleError(err, "Cannot create albums cache folder")
+	}
+
 	// conect to db
 	db.Connect(dataFolder)
 
