@@ -57,6 +57,7 @@ func Initialize(dataFolder string) {
 	State = &PlayerState{
 		false,
 		nil,
+		nil,
 		initialVolume,
 		0.0,
 	}

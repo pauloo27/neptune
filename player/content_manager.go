@@ -25,12 +25,15 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			utils.HandleError(err, "Cannot download file")
 			trackInfo, err := providers.FetchTrackInfo(videoInfo.Artist, videoInfo.Track)
 			utils.HandleError(err, "Cannot fetch track info")
-			err = db.StoreTrack(videoInfo, trackInfo)
+			track, err := db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
+			State.Track = track
 			LoadFile(filePath)
-			fmt.Println(trackInfo)
 		}()
 	} else {
+		track, err := db.TrackFrom(result)
+		utils.HandleError(err, "Cannot get track")
+		State.Track = track
 		LoadFile(filePath)
 	}
 }

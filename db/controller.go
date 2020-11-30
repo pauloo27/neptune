@@ -5,20 +5,33 @@ import (
 	"github.com/Pauloo27/neptune/providers/youtube"
 )
 
-func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) error {
+func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
+	var track Track
+	err := Database.First(&track, "youtube_id = ?", result.ID).Error
+	return &track, err
+}
+
+func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {
+	var err error
 	// artist
 	artist := Artist{
 		MBID: trackInfo.Artist.MBID,
 		Name: trackInfo.Artist.Name,
 	}
-	Database.FirstOrCreate(&artist)
+	err = Database.FirstOrCreate(&artist).Error
+	if err != nil {
+		return nil, err
+	}
 	// album
 	album := Album{
 		MBID:   trackInfo.Album.MBID,
 		Title:  trackInfo.Album.Title,
 		Artist: artist,
 	}
-	Database.FirstOrCreate(&album)
+	err = Database.FirstOrCreate(&album).Error
+	if err != nil {
+		return nil, err
+	}
 	// track
 	track := Track{
 		MBID:         trackInfo.MBID,
@@ -28,18 +41,27 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) er
 		Length:       int(videoInfo.Duration),
 		YoutubeTitle: videoInfo.Title,
 	}
-	Database.FirstOrCreate(&track)
+	err = Database.FirstOrCreate(&track).Error
+	if err != nil {
+		return nil, err
+	}
 	// tags
 	for _, tagName := range trackInfo.Tags {
 		tag := Tag{
 			Name: tagName,
 		}
-		Database.FirstOrCreate(&tag)
+		err = Database.FirstOrCreate(&tag).Error
+		if err != nil {
+			return nil, err
+		}
 		trackTag := TrackTag{
 			Track: track,
 			Tag:   tag,
 		}
-		Database.Create(&trackTag)
+		err = Database.Create(&trackTag).Error
+		if err != nil {
+			return nil, err
+		}
 	}
-	return nil
+	return &track, nil
 }
