@@ -11,8 +11,8 @@ import (
 )
 
 type YoutubeEntry struct {
-	Title, Uploader, Duration, ID string
-	Live                          bool
+	Title, Uploader, DisplayDuration, ID string
+	Live                                 bool
 }
 
 func (result *YoutubeEntry) URL() string {
@@ -107,11 +107,11 @@ func SearchFor(searchTerm string, limit int) ([]*YoutubeEntry, error) {
 		}
 
 		results = append(results, &YoutubeEntry{
-			Title:    title,
-			Uploader: uploader,
-			Duration: duration,
-			ID:       id,
-			Live:     live,
+			Title:           title,
+			Uploader:        uploader,
+			DisplayDuration: duration,
+			ID:              id,
+			Live:            live,
 		})
 	})
 
