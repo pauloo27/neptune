@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/providers"
@@ -23,7 +24,9 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			fmt.Println("Downloading file...")
 			videoInfo, err := youtube.DownloadResult(result, filePath)
 			utils.HandleError(err, "Cannot download file")
-			trackInfo, err := providers.FetchTrackInfo(videoInfo.Artist, videoInfo.Track)
+			// fix for "artist" list (splitted by ',')
+			artist := strings.Split(videoInfo.Artist, ",")[0]
+			trackInfo, err := providers.FetchTrackInfo(artist, videoInfo.Track)
 			utils.HandleError(err, "Cannot fetch track info")
 			track, err := db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
