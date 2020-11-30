@@ -1,6 +1,10 @@
 package db
 
-import "gorm.io/gorm"
+import (
+	"path"
+
+	"gorm.io/gorm"
+)
 
 type Artist struct {
 	gorm.Model
@@ -39,4 +43,8 @@ type Track struct {
 	Length       int
 	YoutubeTitle string
 	Tags         []TrackTag
+}
+
+func (a *Album) GetAlbumArtPath() string {
+	return path.Join(DataFolder, "albums", a.MBID+".png")
 }
