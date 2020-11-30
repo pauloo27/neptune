@@ -4,13 +4,13 @@ import "gorm.io/gorm"
 
 type Artist struct {
 	gorm.Model
-	MBID string
+	MBID string `gorm:"unique"`
 	Name string
 }
 
 type Album struct {
 	gorm.Model
-	MBID     string
+	MBID     string `gorm:"unique"`
 	Title    string
 	ArtistID uint
 	Artist   Artist
@@ -18,12 +18,12 @@ type Album struct {
 
 type Tag struct {
 	gorm.Model
-	Name string
+	Name string `gorm:"unique"`
 }
 
 type Track struct {
 	gorm.Model
-	MBID         string
+	MBID         string `gorm:"unique"`
 	YoutubeId    string
 	Album        Album
 	Title        string
