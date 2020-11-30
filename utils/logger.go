@@ -16,6 +16,6 @@ const (
 
 func HandleError(err error, message string) {
 	if err != nil {
-		log.Fatal(ColorRed, message, "\n", err)
+		log.Panicf("%s:\n%v", message, err)
 	}
 }
