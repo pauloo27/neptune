@@ -123,9 +123,9 @@ func createSongLabel() *gtk.Label {
 	})
 
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
-		entry := player.State.Playing
+		track := player.State.Track
 		glib.IdleAdd(func() {
-			songLabel.SetText(entry.Title)
+			songLabel.SetText(utils.Fmt("%s - %s", track.Album.Artist.Name, track.Title))
 		})
 	})
 
