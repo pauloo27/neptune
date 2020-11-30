@@ -59,7 +59,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 
 	artistMBID, err := jsonparser.GetString(buffer, "track", "artist", "mbid")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get artist mbid: %v", err)
+		artistMBID = "*" + artistName
 	}
 
 	// album info
@@ -70,7 +70,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 
 	albumMBID, err := jsonparser.GetString(buffer, "track", "album", "mbid")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get album mbid: %v", err)
+		albumMBID = artistMBID + "|" + albumTitle
 	}
 
 	albumImageURL, err := jsonparser.GetString(buffer, "track", "album", "image", "[3]", "#text")
@@ -86,7 +86,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 
 	trackMBID, err := jsonparser.GetString(buffer, "track", "mbid")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get track mbid: %v", err)
+		trackMBID = albumMBID + "|" + trackTitle
 	}
 
 	var trackTags []string
