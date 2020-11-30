@@ -5,6 +5,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/Pauloo27/neptune/db"
+	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/Pauloo27/neptune/youtube"
 )
@@ -19,10 +21,14 @@ func PlayResult(result *youtube.YoutubeEntry) {
 		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
 		go func() {
 			fmt.Println("Downloading file...")
-			info, err := youtube.DownloadResult(result, filePath)
+			videoInfo, err := youtube.DownloadResult(result, filePath)
 			utils.HandleError(err, "Cannot download file")
+			trackInfo, err := providers.FetchTrackInfo(videoInfo.Artist, videoInfo.Track)
+			utils.HandleError(err, "Cannot fetch track info")
+			err = db.StoreTrack(videoInfo, trackInfo)
+			utils.HandleError(err, "Cannot store track")
 			LoadFile(filePath)
-			fmt.Println("artist:", info.Artist, "track", info.Track)
+			fmt.Println(trackInfo)
 		}()
 	} else {
 		LoadFile(filePath)
