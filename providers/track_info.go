@@ -1,8 +1,10 @@
 package providers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/buger/jsonparser"
@@ -29,6 +31,12 @@ const (
 )
 
 func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
+	fmt.Printf("Fetching track info for %s by %s\n", track, artist)
+
+	// escape params
+	artist = url.QueryEscape(artist)
+	track = url.QueryEscape(track)
+
 	reqPath := utils.Fmt(
 		"%s/?method=track.getInfo&api_key=%s&artist=%s&track=%s&format=json",
 		ENDPOINT, API_KEY, artist, track,
@@ -46,39 +54,39 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 	// artist info
 	artistName, err := jsonparser.GetString(buffer, "track", "artist", "name")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get artist name: %v", err)
 	}
 
 	artistMBID, err := jsonparser.GetString(buffer, "track", "artist", "mbid")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get artist mbid: %v", err)
 	}
 
 	// album info
 	albumTitle, err := jsonparser.GetString(buffer, "track", "album", "title")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get album title: %v", err)
 	}
 
 	albumMBID, err := jsonparser.GetString(buffer, "track", "album", "mbid")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get album mbid: %v", err)
 	}
 
 	albumImageURL, err := jsonparser.GetString(buffer, "track", "album", "image", "[3]", "#text")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get album image: %v", err)
 	}
 
 	// track info
 	trackTitle, err := jsonparser.GetString(buffer, "track", "name")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get track title: %v", err)
 	}
 
 	trackMBID, err := jsonparser.GetString(buffer, "track", "mbid")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get track mbid: %v", err)
 	}
 
 	var trackTags []string
@@ -89,7 +97,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 		trackTags = append(trackTags, tagName)
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot get track tags: %v", err)
 	}
 
 	return &TrackInfo{
