@@ -3,7 +3,6 @@ package db
 import (
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/youtube"
-	"gorm.io/gorm/clause"
 )
 
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) error {
@@ -12,14 +11,14 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) er
 		MBID: trackInfo.Artist.MBID,
 		Name: trackInfo.Artist.Name,
 	}
-	Database.Clauses(clause.OnConflict{DoNothing: true}).Create(&artist)
+	Database.FirstOrCreate(&artist)
 	// album
 	album := Album{
 		MBID:   trackInfo.Album.MBID,
 		Title:  trackInfo.Album.Title,
 		Artist: artist,
 	}
-	Database.Clauses(clause.OnConflict{DoNothing: true}).Create(&album)
+	Database.FirstOrCreate(&album)
 	// track
 	track := Track{
 		MBID:         trackInfo.MBID,
@@ -29,13 +28,13 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) er
 		Length:       int(videoInfo.Duration),
 		YoutubeTitle: videoInfo.Title,
 	}
-	Database.Clauses(clause.OnConflict{DoNothing: true}).Create(&track)
+	Database.FirstOrCreate(&track)
 	// tags
 	for _, tagName := range trackInfo.Tags {
 		tag := Tag{
 			Name: tagName,
 		}
-		Database.Clauses(clause.OnConflict{DoNothing: true}).Create(&tag)
+		Database.FirstOrCreate(&tag)
 		trackTag := TrackTag{
 			Track: track,
 			Tag:   tag,
