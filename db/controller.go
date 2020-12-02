@@ -6,7 +6,19 @@ import (
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
+	"gorm.io/gorm"
 )
+
+func PlayEntry(result *youtube.YoutubeEntry) (*Track, error) {
+	track, err := TrackFrom(result)
+	if err != nil {
+		return track, err
+	}
+
+	err = Database.Model(&track).Update("play_count", gorm.Expr("play_count + 1")).Error
+
+	return track, err
+}
 
 func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
 	var track Track
@@ -50,6 +62,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		YoutubeID:    videoInfo.ID,
 		Album:        album,
 		Title:        trackInfo.Title,
+		PlayCount:    1,
 		Length:       int(videoInfo.Duration),
 		YoutubeTitle: videoInfo.Title,
 	}

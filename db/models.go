@@ -41,6 +41,7 @@ type Track struct {
 	Album        Album
 	Title        string
 	Length       int
+	PlayCount    int
 	YoutubeTitle string
 	Tags         []TrackTag
 }

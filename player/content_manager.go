@@ -34,7 +34,7 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			LoadFile(filePath)
 		}()
 	} else {
-		track, err := db.TrackFrom(result)
+		track, err := db.PlayEntry(result)
 		utils.HandleError(err, "Cannot get track")
 		State.Track = track
 		LoadFile(filePath)
