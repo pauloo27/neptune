@@ -1,4 +1,4 @@
-package library
+package explorer
 
 import (
 	"github.com/Pauloo27/neptune/player"
@@ -17,6 +17,7 @@ func doSearch(searchTerm string) {
 		return
 	}
 	searching = true
+	explorerContainer.SetCurrentPage(1)
 
 	children := searchResultsContainer.GetChildren()
 

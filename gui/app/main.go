@@ -30,11 +30,11 @@ func Start() {
 
 	mainContainer.SetHomogeneous(true)
 	mainContainer.PackStart(player.CreatePlayer(), false, true, 1)
-	mainContainer.PackEnd(library.CreateLibrary(), false, true, 1)
+	mainContainer.PackEnd(explorer.CreateExplorer(), false, true, 1)
 
 	win.Add(baseContainer)
 
-	baseContainer.PackStart(library.CreateSearchHeader(), false, false, 0)
+	baseContainer.PackStart(explorer.CreateSearchHeader(), false, false, 0)
 	baseContainer.PackEnd(mainContainer, true, true, 0)
 
 	win.SetDefaultSize(800, 600)
