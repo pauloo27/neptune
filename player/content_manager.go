@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 
 	"github.com/Pauloo27/neptune/db"
@@ -11,6 +12,8 @@ import (
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
 )
+
+var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
 
 func PlayResult(result *youtube.YoutubeEntry) {
 	RemoveCurrentFromPlaylist()
@@ -24,9 +27,11 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			fmt.Println("Downloading file...")
 			videoInfo, err := youtube.DownloadResult(result, filePath)
 			utils.HandleError(err, "Cannot download file")
+			// fix track with '(stuff)'
+			trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
 			// fix for "artist" list (splitted by ',')
 			artist := strings.Split(videoInfo.Artist, ",")[0]
-			trackInfo, err := providers.FetchTrackInfo(artist, videoInfo.Track)
+			trackInfo, err := providers.FetchTrackInfo(artist, trackName)
 			utils.HandleError(err, "Cannot fetch track info")
 			track, err := db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
