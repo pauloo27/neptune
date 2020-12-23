@@ -9,13 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
+func PlayTrack(track *Track) error {
+	return Database.Model(track).Update("play_count", gorm.Expr("play_count + 1")).Error
+}
+
 func PlayEntry(result *youtube.YoutubeEntry) (*Track, error) {
 	track, err := TrackFrom(result)
 	if err != nil {
 		return track, err
 	}
 
-	err = Database.Model(&track).Update("play_count", gorm.Expr("play_count + 1")).Error
+	err = PlayTrack(track)
 
 	return track, err
 }

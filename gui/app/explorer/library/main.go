@@ -39,10 +39,10 @@ func showHome() *gtk.Grid {
 	container, err := gtk.GridNew()
 	utils.HandleError(err, "Cannot create grid")
 
-	container.SetColumnSpacing(10)
+	container.SetColumnSpacing(5)
 	container.SetColumnHomogeneous(true)
-	container.SetMarginStart(10)
-	container.SetMarginEnd(10)
+	container.SetMarginStart(5)
+	container.SetMarginEnd(5)
 
 	i := 0
 	addBtn := func(page *LibraryPage) {
@@ -57,7 +57,7 @@ func showHome() *gtk.Grid {
 		i++
 	}
 
-	addBtn(songsPage)
+	addBtn(tracksPage)
 	/*
 		addBtn("Artists", nil)
 		addBtn("Albums", nil)

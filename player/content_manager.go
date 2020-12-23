@@ -15,9 +15,20 @@ import (
 
 var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
 
+func PlayTrack(track *db.Track) {
+	RemoveCurrentFromPlaylist()
+	filePath := path.Join(DataFolder, "songs", track.YoutubeID+".m4a")
+
+	err := db.PlayTrack(track)
+	utils.HandleError(err, "Cannot play track")
+
+	State.Track = track
+	LoadFile(filePath)
+}
+
 func PlayResult(result *youtube.YoutubeEntry) {
 	RemoveCurrentFromPlaylist()
-	State.Playing = result
+	State.Fetching = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
 	filePath := path.Join(DataFolder, "songs", result.ID+".m4a")
 	_, err := os.Stat(filePath)
@@ -44,4 +55,5 @@ func PlayResult(result *youtube.YoutubeEntry) {
 		State.Track = track
 		LoadFile(filePath)
 	}
+	State.Fetching = nil
 }
