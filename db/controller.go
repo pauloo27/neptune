@@ -28,6 +28,20 @@ func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
 	return &track, err
 }
 
+func ListTracks(page int) ([]*Track, error) {
+	var tracks []*Track
+
+	result := Database.
+		Preload("Album.Artist").Preload("Tags.Tag").
+		Order("play_count desc").Find(&tracks)
+
+	if result.Error != nil {
+		return tracks, result.Error
+	}
+
+	return tracks, nil
+}
+
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {
 	var err error
 	// artist
