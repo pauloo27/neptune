@@ -14,6 +14,7 @@ const (
 var MpvInstance *mpv.Mpv
 var State *PlayerState
 var DataFolder string
+var loaded = false
 
 func Initialize(dataFolder string) {
 	var err error
@@ -87,6 +88,10 @@ func RemoveCurrentFromPlaylist() error {
 }
 
 func LoadFile(filePath string) error {
+	if !loaded {
+		MpvInstance.Command([]string{"load-script", "/home/paulo/.config/mpv/scripts/mpris.so"})
+		loaded = true
+	}
 	err := MpvInstance.Command([]string{"loadfile", filePath})
 	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
 	return err

@@ -46,6 +46,10 @@ type Track struct {
 	Tags         []TrackTag
 }
 
+func (t *Track) GetPath() string {
+	return path.Join(DataFolder, "albums", t.Album.MBID, t.YoutubeID+".m4a")
+}
+
 func (a *Album) GetAlbumArtPath() string {
 	return path.Join(DataFolder, "albums", a.MBID, ".folder.png")
 }
