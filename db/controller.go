@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"path"
 
 	"github.com/Pauloo27/neptune/providers"
@@ -15,7 +16,11 @@ func PlayTrack(track *Track) error {
 
 func PlayEntry(result *youtube.YoutubeEntry) (*Track, error) {
 	track, err := TrackFrom(result)
+
 	if err != nil {
+		if errors.Is(gorm.ErrRecordNotFound, err) {
+			return nil, nil
+		}
 		return track, err
 	}
 
@@ -68,7 +73,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 		FirstOrCreate(&album).Error
 	// download album art
 	err = utils.DownloadFile(trackInfo.Album.ImageURL,
-		path.Join(DataFolder, "albums", trackInfo.Album.MBID+".png"),
+		path.Join(DataFolder, "albums", trackInfo.Album.MBID, ".folder.png"),
 	)
 	utils.HandleError(err, "Cannot download album image")
 	if err != nil {

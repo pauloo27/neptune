@@ -30,13 +30,14 @@ func PlayResult(result *youtube.YoutubeEntry) {
 	RemoveCurrentFromPlaylist()
 	State.Fetching = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
-	filePath := path.Join(DataFolder, "songs", result.ID+".m4a")
-	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
+	track, err := db.PlayEntry(result)
+	utils.HandleError(err, "Cannot find track")
+	if track == nil {
 		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
 		go func() {
 			fmt.Println("Downloading file...")
-			videoInfo, err := youtube.DownloadResult(result, filePath)
+			tmpFile := path.Join(DataFolder, "wip_downloads", result.ID+".m4a")
+			videoInfo, err := youtube.DownloadResult(result, tmpFile)
 			utils.HandleError(err, "Cannot download file")
 			// fix track with '(stuff)'
 			trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
@@ -44,15 +45,25 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			artist := strings.Split(videoInfo.Artist, ",")[0]
 			trackInfo, err := providers.FetchTrackInfo(artist, trackName)
 			utils.HandleError(err, "Cannot fetch track info")
-			track, err := db.StoreTrack(videoInfo, trackInfo)
+
+			albumPath := path.Join(DataFolder, "albums", trackInfo.Album.MBID)
+			if _, err := os.Stat(albumPath); os.IsNotExist(err) {
+				err = os.MkdirAll(albumPath, 0744)
+				utils.HandleError(err, "Cannot create album folder at"+albumPath)
+			}
+			filePath := path.Join(albumPath, result.ID+".m4a")
+			err = os.Rename(tmpFile, filePath)
+			utils.HandleError(err, "Cannot move tmp download file to cache file")
+
+			track, err = db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
+
 			State.Track = track
 			LoadFile(filePath)
 		}()
 	} else {
-		track, err := db.PlayEntry(result)
-		utils.HandleError(err, "Cannot get track")
 		State.Track = track
+		filePath := path.Join(DataFolder, "albums", track.Album.MBID, result.ID+".m4a")
 		LoadFile(filePath)
 	}
 	State.Fetching = nil

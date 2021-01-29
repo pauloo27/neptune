@@ -47,5 +47,5 @@ type Track struct {
 }
 
 func (a *Album) GetAlbumArtPath() string {
-	return path.Join(DataFolder, "albums", a.MBID+".png")
+	return path.Join(DataFolder, "albums", a.MBID, ".folder.png")
 }
