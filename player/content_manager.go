@@ -39,13 +39,34 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			tmpFile := path.Join(DataFolder, "wip_downloads", result.ID+".m4a")
 			videoInfo, err := youtube.DownloadResult(result, tmpFile)
 			utils.HandleError(err, "Cannot download file")
-			// fix track with '(stuff)'
-			trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
-			// fix for "artist" list (splitted by ',')
-			artist := strings.Split(videoInfo.Artist, ",")[0]
-			trackInfo, err := providers.FetchTrackInfo(artist, trackName)
-			utils.HandleError(err, "Cannot fetch track info")
-
+			var trackInfo *providers.TrackInfo
+			if videoInfo.Artist == "" || videoInfo.Track == "" {
+				artistInfo := providers.ArtistInfo{
+					Name: videoInfo.Uploader,
+					MBID: "!YT:" + videoInfo.ID,
+				}
+				albumInfo := providers.AlbumInfo{
+					Title: "YouTube video by " + videoInfo.Uploader,
+					MBID:  "!YT:" + videoInfo.ID,
+					ImageURL: utils.Fmt(
+						"https://i1.ytimg.com/vi/%s/hqdefault.jpg", videoInfo.ID,
+					),
+				}
+				trackInfo = &providers.TrackInfo{
+					Artist: &artistInfo,
+					Album:  &albumInfo,
+					Title:  videoInfo.Title,
+					MBID:   "!YT:" + videoInfo.ID,
+				}
+			} else {
+				var err error
+				// fix track with '(stuff)'
+				trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
+				// fix for "artist" list (splitted by ',')
+				artist := strings.Split(videoInfo.Artist, ",")[0]
+				trackInfo, err = providers.FetchTrackInfo(artist, trackName)
+				utils.HandleError(err, "Cannot fetch track info")
+			}
 			albumPath := path.Join(DataFolder, "albums", trackInfo.Album.MBID)
 			if _, err := os.Stat(albumPath); os.IsNotExist(err) {
 				err = os.MkdirAll(albumPath, 0744)
@@ -54,7 +75,6 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			filePath := path.Join(albumPath, result.ID+".m4a")
 			err = os.Rename(tmpFile, filePath)
 			utils.HandleError(err, "Cannot move tmp download file to cache file")
-
 			track, err = db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
 
