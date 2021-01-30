@@ -39,7 +39,7 @@ func showHome() *gtk.Grid {
 	container, err := gtk.GridNew()
 	utils.HandleError(err, "Cannot create grid")
 
-	container.SetColumnSpacing(5)
+	container.SetRowSpacing(5)
 	container.SetColumnHomogeneous(true)
 	container.SetMarginStart(5)
 	container.SetMarginEnd(5)
@@ -53,7 +53,7 @@ func showHome() *gtk.Grid {
 			displayPage(page)
 		})
 
-		container.Attach(button, i, 0, 1, 1)
+		container.Attach(button, 0, i, 1, 1)
 		i++
 	}
 
