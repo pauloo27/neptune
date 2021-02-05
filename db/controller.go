@@ -34,6 +34,7 @@ func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
 	err := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").
 		First(&track, "youtube_id = ?", result.ID).Error
+
 	return &track, err
 }
 
@@ -44,11 +45,7 @@ func ListTracks(page int) ([]*Track, error) {
 		Preload("Album.Artist").Preload("Tags.Tag").
 		Order("play_count desc").Find(&tracks)
 
-	if result.Error != nil {
-		return tracks, result.Error
-	}
-
-	return tracks, nil
+	return tracks, result.Error
 }
 
 func ListArtists(page int) ([]*Artist, error) {
@@ -62,9 +59,19 @@ func ListArtists(page int) ([]*Artist, error) {
 func ListAlbumsBy(artist *Artist, page int) ([]*Album, error) {
 	var albums []*Album
 
-	result := Database.Where("artist_id = ?", artist.ID).Find(&albums)
+	result := Database.Find(&albums, "artist_id = ?", artist.ID)
 
 	return albums, result.Error
+}
+
+func ListTracksBy(artist *Artist, page int) ([]*Track, error) {
+	var tracks []*Track
+
+	result := Database.
+		Preload("Album.Artist").Preload("Tags.Tag").Joins("Album").
+		Order("play_count desc").Find(&tracks, "Album__artist_id = ?", artist.ID)
+
+	return tracks, result.Error
 }
 
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {

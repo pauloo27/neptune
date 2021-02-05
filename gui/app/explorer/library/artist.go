@@ -17,18 +17,32 @@ func createArtistPage(artist *db.Artist) *LibraryPage {
 		container.SetMarginStart(5)
 		container.SetMarginEnd(5)
 
-		albumsLabel, err := gtk.LabelNew("Albums:")
-		utils.HandleError(err, "Cannot create label")
-
-		container.Attach(albumsLabel, 0, 0, 1, 1)
-
 		go func() {
 			albums, err := db.ListAlbumsBy(artist, 1)
 			utils.HandleError(err, "Cannot list albums by artist "+artist.MBID)
 
+			tracks, err := db.ListTracksBy(artist, 1)
+			utils.HandleError(err, "Cannot list tracks by artist "+artist.MBID)
+
 			glib.IdleAdd(func() {
-				for i, album := range albums {
-					container.Attach(displayAlbum(album), 0, i+1, 1, 1)
+				albumsLabel, err := gtk.LabelNew("Albums:")
+				utils.HandleError(err, "Cannot create label")
+				container.Attach(albumsLabel, 0, 0, 1, 1)
+
+				i := 1
+				for _, album := range albums {
+					container.Attach(displayAlbum(album), 0, i, 1, 1)
+					i++
+				}
+
+				tracksLabel, err := gtk.LabelNew("Tracks:")
+				utils.HandleError(err, "Cannot create label")
+				container.Attach(tracksLabel, 0, i, 1, 1)
+
+				i++
+				for _, track := range tracks {
+					container.Attach(displayTrack(track), 0, i, 1, 1)
+					i++
 				}
 				container.ShowAll()
 			})
