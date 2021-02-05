@@ -56,11 +56,15 @@ func ListArtists(page int) ([]*Artist, error) {
 
 	result := Database.Find(&artists)
 
-	if result.Error != nil {
-		return artists, result.Error
-	}
+	return artists, result.Error
+}
 
-	return artists, nil
+func ListAlbumsBy(artist *Artist, page int) ([]*Album, error) {
+	var albums []*Album
+
+	result := Database.Where("artist_id = ?", artist.ID).Find(&albums)
+
+	return albums, result.Error
 }
 
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {

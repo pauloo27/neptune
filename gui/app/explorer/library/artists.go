@@ -14,6 +14,11 @@ var (
 func displayArtist(artist *db.Artist) *gtk.Button {
 	btn, err := gtk.ButtonNewWithLabel(artist.Name)
 	utils.HandleError(err, "Cannot create button")
+
+	btn.Connect("clicked", func() {
+		displayPage(createArtistPage(artist))
+	})
+
 	return btn
 }
 
@@ -34,7 +39,6 @@ func showArtists() *gtk.Grid {
 			for i, artist := range artists {
 				container.Attach(displayArtist(artist), 0, i, 1, 1)
 			}
-
 			container.ShowAll()
 		})
 	}()
