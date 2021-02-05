@@ -46,8 +46,8 @@ func PlayResult(result *youtube.YoutubeEntry) {
 					MBID: "!YT:" + videoInfo.UploaderID,
 				}
 				albumInfo := providers.AlbumInfo{
-					Title: "YouTube video by " + videoInfo.Uploader,
-					MBID:  "!YT:" + videoInfo.ID,
+					Title: "YouTube videos by " + videoInfo.Uploader,
+					MBID:  "!YT:" + videoInfo.UploaderID,
 					ImageURL: utils.Fmt(
 						"https://i1.ytimg.com/vi/%s/hqdefault.jpg", videoInfo.ID,
 					),
