@@ -69,10 +69,9 @@ func showHome() *gtk.Grid {
 	}
 
 	addBtn(tracksPage)
+	addBtn(albumsPage)
 	addBtn(artistsPage)
 	/*
-		addBtn("Artists", nil)
-		addBtn("Albums", nil)
 		addBtn("Tags", nil)
 	*/
 	return container

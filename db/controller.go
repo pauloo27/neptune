@@ -59,7 +59,15 @@ func ListArtists(page int) ([]*Artist, error) {
 func ListAlbumsBy(artist *Artist, page int) ([]*Album, error) {
 	var albums []*Album
 
-	result := Database.Find(&albums, "artist_id = ?", artist.ID)
+	result := Database.Preload("Artist").Find(&albums, "artist_id = ?", artist.ID)
+
+	return albums, result.Error
+}
+
+func ListAlbums(page int) ([]*Album, error) {
+	var albums []*Album
+
+	result := Database.Preload("Artist").Find(&albums)
 
 	return albums, result.Error
 }

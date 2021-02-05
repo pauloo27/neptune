@@ -31,7 +31,7 @@ func createArtistPage(artist *db.Artist) *LibraryPage {
 
 				i := 1
 				for _, album := range albums {
-					container.Attach(displayAlbum(album), 0, i, 1, 1)
+					container.Attach(displayAlbum(album, false), 0, i, 1, 1)
 					i++
 				}
 
