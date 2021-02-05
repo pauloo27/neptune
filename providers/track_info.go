@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/buger/jsonparser"
 )
@@ -30,16 +31,26 @@ const (
 	ENDPOINT = "https://ws.audioscrobbler.com/2.0"
 )
 
-func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
-	fmt.Printf("Fetching track info for %s by %s\n", track, artist)
+func FetchTrackInfo(info *youtube.VideoInfo) (*TrackInfo, error) {
+	fmt.Printf("Fetching track info for %s by %s\n", info.Track, info.Artist)
+
+	/*
+		here are some old stuff that I used... maybe it will be necessary here
+		as well
+	*/
+	// var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
+	// fix track with '(stuff)'
+	//trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
+	// fix for "artist" list (splitted by ',')
+	//artist := strings.Split(videoInfo.Artist, ",")[0]
 
 	// escape params
-	artist = url.QueryEscape(artist)
-	track = url.QueryEscape(track)
+	escapedArtist := url.QueryEscape(info.Artist)
+	escapedTrack := url.QueryEscape(info.Track)
 
 	reqPath := utils.Fmt(
 		"%s/?method=track.getInfo&api_key=%s&artist=%s&track=%s&format=json",
-		ENDPOINT, API_KEY, artist, track,
+		ENDPOINT, API_KEY, escapedArtist, escapedTrack,
 	)
 
 	res, err := http.Get(reqPath)
@@ -54,7 +65,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 	// artist info
 	artistName, err := jsonparser.GetString(buffer, "track", "artist", "name")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get artist name: %v", err)
+		artistName = info.Artist
 	}
 
 	artistMBID, err := jsonparser.GetString(buffer, "track", "artist", "mbid")
@@ -65,7 +76,7 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 	// album info
 	albumTitle, err := jsonparser.GetString(buffer, "track", "album", "title")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get album title: %v", err)
+		albumTitle = utils.Fmt("Unknown %s's album", artistName)
 	}
 
 	albumMBID, err := jsonparser.GetString(buffer, "track", "album", "mbid")
@@ -75,13 +86,13 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 
 	albumImageURL, err := jsonparser.GetString(buffer, "track", "album", "image", "[3]", "#text")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get album image: %v", err)
+		albumImageURL = info.GetThumbnail()
 	}
 
 	// track info
 	trackTitle, err := jsonparser.GetString(buffer, "track", "name")
 	if err != nil {
-		return nil, fmt.Errorf("Cannot get track title: %v", err)
+		trackTitle = info.Track
 	}
 
 	trackMBID, err := jsonparser.GetString(buffer, "track", "mbid")
@@ -96,9 +107,6 @@ func FetchTrackInfo(artist, track string) (*TrackInfo, error) {
 		tagName, err := jsonparser.GetString(data, "name")
 		trackTags = append(trackTags, tagName)
 	})
-	if err != nil {
-		return nil, fmt.Errorf("Cannot get track tags: %v", err)
-	}
 
 	return &TrackInfo{
 		Title: trackTitle,

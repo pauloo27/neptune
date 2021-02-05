@@ -3,12 +3,19 @@ package youtube
 import (
 	"os/exec"
 
+	"github.com/Pauloo27/neptune/utils"
 	"github.com/buger/jsonparser"
 )
 
 type VideoInfo struct {
 	Artist, Track, Uploader, UploaderID, Title, ID string
 	Duration                                       int64
+}
+
+func (v *VideoInfo) GetThumbnail() string {
+	return utils.Fmt(
+		"https://i1.ytimg.com/vi/%s/hqdefault.jpg", v.ID,
+	)
 }
 
 var youtubeDLPath = ""

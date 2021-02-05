@@ -4,16 +4,12 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"regexp"
-	"strings"
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
 )
-
-var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
 
 func PlayTrack(track *db.Track) {
 	RemoveCurrentFromPlaylist()
@@ -46,11 +42,9 @@ func PlayResult(result *youtube.YoutubeEntry) {
 					MBID: "!YT:" + videoInfo.UploaderID,
 				}
 				albumInfo := providers.AlbumInfo{
-					Title: "YouTube videos by " + videoInfo.Uploader,
-					MBID:  "!YT:" + videoInfo.UploaderID,
-					ImageURL: utils.Fmt(
-						"https://i1.ytimg.com/vi/%s/hqdefault.jpg", videoInfo.ID,
-					),
+					Title:    "YouTube videos by " + videoInfo.Uploader,
+					MBID:     "!YT:" + videoInfo.UploaderID,
+					ImageURL: videoInfo.GetThumbnail(),
 				}
 				trackInfo = &providers.TrackInfo{
 					Artist: &artistInfo,
@@ -60,11 +54,7 @@ func PlayResult(result *youtube.YoutubeEntry) {
 				}
 			} else {
 				var err error
-				// fix track with '(stuff)'
-				trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
-				// fix for "artist" list (splitted by ',')
-				artist := strings.Split(videoInfo.Artist, ",")[0]
-				trackInfo, err = providers.FetchTrackInfo(artist, trackName)
+				trackInfo, err = providers.FetchTrackInfo(videoInfo)
 				utils.HandleError(err, "Cannot fetch track info")
 			}
 			albumPath := path.Join(DataFolder, "albums", trackInfo.Album.MBID)
