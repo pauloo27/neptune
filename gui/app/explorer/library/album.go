@@ -32,7 +32,7 @@ func createAlbumPage(album *db.Album) *LibraryPage {
 				container.Attach(albumArt, 0, 0, 1, 1)
 
 				for i, track := range tracks {
-					container.Attach(displayTrack(track), 0, i+1, 1, 1)
+					container.Attach(displayTrack(track, false), 0, i+1, 1, 1)
 				}
 				container.ShowAll()
 			})

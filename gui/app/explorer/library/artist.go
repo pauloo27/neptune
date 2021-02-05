@@ -41,7 +41,7 @@ func createArtistPage(artist *db.Artist) *LibraryPage {
 
 				i++
 				for _, track := range tracks {
-					container.Attach(displayTrack(track), 0, i, 1, 1)
+					container.Attach(displayTrack(track, false), 0, i, 1, 1)
 					i++
 				}
 				container.ShowAll()
