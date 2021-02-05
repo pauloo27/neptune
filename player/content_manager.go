@@ -43,7 +43,7 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			if videoInfo.Artist == "" || videoInfo.Track == "" {
 				artistInfo := providers.ArtistInfo{
 					Name: videoInfo.Uploader,
-					MBID: "!YT:" + videoInfo.ID,
+					MBID: "!YT:" + videoInfo.UploaderID,
 				}
 				albumInfo := providers.AlbumInfo{
 					Title: "YouTube video by " + videoInfo.Uploader,

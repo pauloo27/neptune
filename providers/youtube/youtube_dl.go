@@ -7,8 +7,8 @@ import (
 )
 
 type VideoInfo struct {
-	Artist, Track, Uploader, Title, ID string
-	Duration                           int64
+	Artist, Track, Uploader, UploaderID, Title, ID string
+	Duration                                       int64
 }
 
 var youtubeDLPath = ""
@@ -32,11 +32,12 @@ func DownloadResult(result *YoutubeEntry, filePath string) (*VideoInfo, error) {
 	}
 
 	uploader, _ := jsonparser.GetString(buffer, "uploader")
+	uploaderID, _ := jsonparser.GetString(buffer, "uploader_id")
 	title, _ := jsonparser.GetString(buffer, "title")
 	id, _ := jsonparser.GetString(buffer, "id")
 	duration, _ := jsonparser.GetInt(buffer, "duration")
 	artist, _ := jsonparser.GetString(buffer, "artist")
 	track, _ := jsonparser.GetString(buffer, "track")
 
-	return &VideoInfo{artist, track, uploader, title, id, duration}, nil
+	return &VideoInfo{artist, track, uploader, uploaderID, title, id, duration}, nil
 }
