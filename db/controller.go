@@ -82,6 +82,16 @@ func ListTracksBy(artist *Artist, page int) ([]*Track, error) {
 	return tracks, result.Error
 }
 
+func ListTracksIn(album *Album) ([]*Track, error) {
+	var tracks []*Track
+
+	result := Database.
+		Preload("Album.Artist").Preload("Tags.Tag").
+		Find(&tracks, "album_id", album.ID)
+
+	return tracks, result.Error
+}
+
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {
 	var err error
 	// artist

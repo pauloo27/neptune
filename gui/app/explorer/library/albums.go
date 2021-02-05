@@ -20,7 +20,7 @@ func displayAlbum(album *db.Album, showArtistName bool) *gtk.Button {
 	utils.HandleError(err, "Cannot create button")
 
 	btn.Connect("clicked", func() {
-		// TODO:
+		displayPage(createAlbumPage(album))
 	})
 
 	return btn
