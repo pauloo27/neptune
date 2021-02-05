@@ -10,6 +10,7 @@ var (
 	goBackBtn        *gtk.Button
 	contentContainer *gtk.Grid
 	libraryContainer *gtk.Box
+	scroller         *gtk.ScrolledWindow
 
 	homePage = &LibraryPage{"Home", showHome}
 )
@@ -24,13 +25,23 @@ type LibraryPage struct {
 func displayPage(page *LibraryPage) {
 	titleHeader.SetText(page.PageTitle)
 
+	if scroller != nil {
+		scroller.Destroy()
+	}
+
 	if contentContainer != nil {
 		contentContainer.Destroy()
 	}
 
-	contentContainer = page.ShowPage()
+	var err error
 
-	libraryContainer.PackStart(contentContainer, true, true, 0)
+	scroller, err = gtk.ScrolledWindowNew(nil, nil)
+	utils.HandleError(err, "Cannot create scrolled window")
+
+	contentContainer = page.ShowPage()
+	scroller.Add(contentContainer)
+
+	libraryContainer.PackStart(scroller, true, true, 0)
 
 	libraryContainer.ShowAll()
 }
