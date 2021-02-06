@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
+	"strings"
 
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
@@ -31,22 +33,19 @@ const (
 	ENDPOINT = "https://ws.audioscrobbler.com/2.0"
 )
 
+var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
+
 func FetchTrackInfo(info *youtube.VideoInfo) (*TrackInfo, error) {
 	fmt.Printf("Fetching track info for %s by %s\n", info.Track, info.Artist)
 
-	/*
-		here are some old stuff that I used... maybe it will be necessary here
-		as well
-	*/
-	// var parenthesisRegex = regexp.MustCompile(`\s?\(.+\)`)
 	// fix track with '(stuff)'
-	//trackName := parenthesisRegex.ReplaceAllString(videoInfo.Track, "")
+	trackName := parenthesisRegex.ReplaceAllString(info.Track, "")
 	// fix for "artist" list (splitted by ',')
-	//artist := strings.Split(videoInfo.Artist, ",")[0]
+	artist := strings.Split(info.Artist, ",")[0]
 
 	// escape params
-	escapedArtist := url.QueryEscape(info.Artist)
-	escapedTrack := url.QueryEscape(info.Track)
+	escapedArtist := url.QueryEscape(artist)
+	escapedTrack := url.QueryEscape(trackName)
 
 	reqPath := utils.Fmt(
 		"%s/?method=track.getInfo&api_key=%s&artist=%s&track=%s&format=json",
@@ -65,7 +64,7 @@ func FetchTrackInfo(info *youtube.VideoInfo) (*TrackInfo, error) {
 	// artist info
 	artistName, err := jsonparser.GetString(buffer, "track", "artist", "name")
 	if err != nil {
-		artistName = info.Artist
+		artistName = artist
 	}
 
 	artistMBID, err := jsonparser.GetString(buffer, "track", "artist", "mbid")
