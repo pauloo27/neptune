@@ -92,6 +92,30 @@ func ListTracksIn(album *Album) ([]*Track, error) {
 	return tracks, result.Error
 }
 
+func ListTracksWith(tag *Tag) ([]*Track, error) {
+	var tracks []*Track
+
+	var trackTags []*TrackTag
+	result := Database.Preload("Track.Album.Artist").Preload("Tag").
+		Find(&trackTags, "tag_id = ?", tag.ID)
+
+	if result.Error == nil {
+		for _, trackTags := range trackTags {
+			tracks = append(tracks, &trackTags.Track)
+		}
+	}
+
+	return tracks, result.Error
+}
+
+func ListTags(page int) ([]*Tag, error) {
+	var tags []*Tag
+
+	result := Database.Find(&tags)
+
+	return tags, result.Error
+}
+
 func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {
 	var err error
 	// artist
