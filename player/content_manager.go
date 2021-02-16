@@ -11,8 +11,26 @@ import (
 	"github.com/Pauloo27/neptune/utils"
 )
 
+func PlayTracks(tracks []*db.Track) {
+	RemoveCurrentFromPlaylist()
+	ClearPlaylist()
+
+	if len(tracks) == 0 {
+		return
+	}
+
+	AddToTopOfQueue(tracks[0])
+	LoadFile(tracks[0].GetPath())
+
+	for _, track := range tracks[1:] {
+		AddToQueue(track)
+		AppendFile(track.GetPath())
+	}
+}
+
 func PlayTrack(track *db.Track) {
 	RemoveCurrentFromPlaylist()
+	ClearPlaylist()
 
 	filePath := track.GetPath()
 	err := db.PlayTrack(track)
@@ -24,6 +42,8 @@ func PlayTrack(track *db.Track) {
 
 func PlayResult(result *youtube.YoutubeEntry) {
 	RemoveCurrentFromPlaylist()
+	ClearPlaylist()
+
 	State.Fetching = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
 	track, err := db.PlayEntry(result)

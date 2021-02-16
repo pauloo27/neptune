@@ -18,6 +18,8 @@ func createAlbumPage(album *db.Album) *LibraryPage {
 			utils.HandleError(err, "Cannot list tracks in album "+album.MBID)
 
 			glib.IdleAdd(func() {
+				container.Attach(createPlayAll("Play album", tracks), 0, 0, 1, 1)
+
 				albumArt, err := gtk.ImageNew()
 				utils.HandleError(err, "Cannot create image")
 
@@ -29,10 +31,10 @@ func createAlbumPage(album *db.Album) *LibraryPage {
 				albumArt.SetMarginBottom(5)
 				container.SetHAlign(gtk.ALIGN_CENTER)
 
-				container.Attach(albumArt, 0, 0, 1, 1)
+				container.Attach(albumArt, 0, 1, 10, 1)
 
 				for i, track := range tracks {
-					container.Attach(displayTrack(track, false), 0, i+1, 1, 1)
+					container.Attach(displayTrack(track, false), 0, i+2, 10, 1)
 				}
 				container.ShowAll()
 			})
