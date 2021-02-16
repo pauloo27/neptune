@@ -115,7 +115,7 @@ func LoadFile(filePath string) error {
 	return err
 }
 
-func AppendFiel(filePath string) error {
+func AppendFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
 	callHooks(HOOK_FILE_APPENDED, err, filePath)
