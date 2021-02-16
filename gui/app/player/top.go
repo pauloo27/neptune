@@ -19,7 +19,7 @@ func createPlayerTop() *gtk.Box {
 	albumArt.SetVAlign(gtk.ALIGN_CENTER)
 
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
-		imagePath := player.State.Track.Album.GetAlbumArtPath()
+		imagePath := player.GetCurrentTrack().Album.GetAlbumArtPath()
 		glib.IdleAdd(func() {
 			imagePix, err := gdk.PixbufNewFromFileAtScale(imagePath, 300, 300, true)
 			utils.HandleError(err, "Cannot load image from file")

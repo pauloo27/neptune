@@ -10,6 +10,7 @@ const (
 	HOOK_FILE_LOADED
 	HOOK_POSITION_CHANGED
 	HOOK_RESULT_DOWNLOAD_STARTED
+	HOOK_FILE_APPENDED
 )
 
 type HookCallback func(params ...interface{})

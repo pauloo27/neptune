@@ -3,6 +3,7 @@ package player
 import (
 	"math"
 
+	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/player/mpv"
 	"github.com/Pauloo27/neptune/utils"
 )
@@ -14,7 +15,6 @@ const (
 var MpvInstance *mpv.Mpv
 var State *PlayerState
 var DataFolder string
-var loaded = false
 
 func Initialize(dataFolder string) {
 	var err error
@@ -79,6 +79,27 @@ func Initialize(dataFolder string) {
 	callHooks(HOOK_PLAYER_INITIALIZED, err)
 }
 
+func GetCurrentTrack() *db.Track {
+	if len(State.Queue) == 0 {
+		return nil
+	}
+	return State.Queue[0]
+}
+
+func AddToQueue(track *db.Track) {
+	State.Queue = append(State.Queue, track)
+}
+
+func AddToTopOfQueue(track *db.Track) {
+	newQueue := []*db.Track{track}
+	newQueue = append(newQueue, State.Queue...)
+	State.Queue = newQueue
+}
+
+func ClearQueue() {
+	State.Queue = []*db.Track{}
+}
+
 func ClearPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-clear"})
 }
@@ -88,12 +109,16 @@ func RemoveCurrentFromPlaylist() error {
 }
 
 func LoadFile(filePath string) error {
-	if !loaded {
-		MpvInstance.Command([]string{"load-script", "/home/paulo/.config/mpv/scripts/mpris.so"})
-		loaded = true
-	}
+	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath})
 	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
+	return err
+}
+
+func AppendFiel(filePath string) error {
+	loadMPRIS()
+	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
+	callHooks(HOOK_FILE_APPENDED, err, filePath)
 	return err
 }
 

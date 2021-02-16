@@ -18,7 +18,7 @@ func PlayTrack(track *db.Track) {
 	err := db.PlayTrack(track)
 	utils.HandleError(err, "Cannot play track")
 
-	State.Track = track
+	AddToTopOfQueue(track)
 	LoadFile(filePath)
 }
 
@@ -68,11 +68,11 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			track, err = db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
 
-			State.Track = track
+			AddToTopOfQueue(track)
 			LoadFile(filePath)
 		}()
 	} else {
-		State.Track = track
+		AddToTopOfQueue(track)
 		LoadFile(track.GetPath())
 	}
 	State.Fetching = nil

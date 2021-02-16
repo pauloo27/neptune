@@ -123,7 +123,7 @@ func createSongLabel() *gtk.Label {
 	})
 
 	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
-		track := player.State.Track
+		track := player.GetCurrentTrack()
 		glib.IdleAdd(func() {
 			songLabel.SetText(utils.Fmt("%s - %s", track.Album.Artist.Name, track.Title))
 		})

@@ -8,7 +8,7 @@ import (
 type PlayerState struct {
 	Paused   bool
 	Fetching *youtube.YoutubeEntry
-	Track    *db.Track
+	Queue    []*db.Track
 	Volume   float64
 	Duration float64
 }
