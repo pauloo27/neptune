@@ -37,9 +37,13 @@ func createArtistPage(artist *db.Artist) *LibraryPage {
 
 				tracksLabel, err := gtk.LabelNew("Tracks:")
 				utils.HandleError(err, "Cannot create label")
-				container.Attach(tracksLabel, 0, i, 1, 1)
 
+				container.Attach(tracksLabel, 0, i, 1, 1)
 				i++
+
+				container.Attach(createPlayAll("Play all", tracks), 0, i, 1, 1)
+				i++
+
 				for _, track := range tracks {
 					container.Attach(displayTrack(track, false), 0, i, 1, 1)
 					i++

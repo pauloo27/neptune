@@ -78,6 +78,9 @@ func Initialize(dataFolder string) {
 			utils.HandleError(err, "Cannot get playlist-pos")
 		}
 		State.QueueIndex = int(index.(int64))
+		if State.QueueIndex == -1 {
+			State.QueueIndex = 0
+		}
 	})
 
 	// start the player

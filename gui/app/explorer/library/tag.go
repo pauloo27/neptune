@@ -22,8 +22,9 @@ func createTagPage(tag *db.Tag) *LibraryPage {
 			utils.HandleError(err, "Cannot list tracks with tag "+tag.Name)
 
 			glib.IdleAdd(func() {
+				container.Attach(createPlayAll("Play all", tracks), 0, 0, 1, 1)
 				for i, track := range tracks {
-					container.Attach(displayTrack(track, true), 0, i, 1, 1)
+					container.Attach(displayTrack(track, true), 0, i+1, 1, 1)
 				}
 				container.ShowAll()
 			})
