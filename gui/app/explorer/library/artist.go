@@ -18,10 +18,10 @@ func createArtistPage(artist *db.Artist) *LibraryPage {
 		container.SetMarginEnd(5)
 
 		go func() {
-			albums, err := db.ListAlbumsBy(artist, 1)
+			albums, err := db.ListAlbumsBy(artist)
 			utils.HandleError(err, "Cannot list albums by artist "+artist.MBID)
 
-			tracks, err := db.ListTracksBy(artist, 1)
+			tracks, err := db.ListTracksBy(artist)
 			utils.HandleError(err, "Cannot list tracks by artist "+artist.MBID)
 
 			glib.IdleAdd(func() {

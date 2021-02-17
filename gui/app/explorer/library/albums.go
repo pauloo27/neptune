@@ -35,7 +35,7 @@ func showAlbums() *gtk.Grid {
 	container.SetMarginEnd(5)
 
 	go func() {
-		albums, err := db.ListAlbums(1)
+		albums, err := db.ListAlbums()
 		utils.HandleError(err, "Cannot list albums")
 
 		glib.IdleAdd(func() {

@@ -30,7 +30,7 @@ func showTags() *gtk.Grid {
 	container.SetMarginEnd(5)
 
 	go func() {
-		tags, err := db.ListTags(1)
+		tags, err := db.ListTags()
 		utils.HandleError(err, "Cannot list tags")
 
 		glib.IdleAdd(func() {

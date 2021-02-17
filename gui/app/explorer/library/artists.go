@@ -32,7 +32,7 @@ func showArtists() *gtk.Grid {
 	container.SetMarginEnd(5)
 
 	go func() {
-		artists, err := db.ListArtists(1)
+		artists, err := db.ListArtists()
 		utils.HandleError(err, "Cannot list artist")
 
 		glib.IdleAdd(func() {

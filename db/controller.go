@@ -48,7 +48,7 @@ func ListTracks(page int) ([]*Track, error) {
 	return tracks, result.Error
 }
 
-func ListArtists(page int) ([]*Artist, error) {
+func ListArtists() ([]*Artist, error) {
 	var artists []*Artist
 
 	result := Database.Find(&artists)
@@ -56,7 +56,7 @@ func ListArtists(page int) ([]*Artist, error) {
 	return artists, result.Error
 }
 
-func ListAlbumsBy(artist *Artist, page int) ([]*Album, error) {
+func ListAlbumsBy(artist *Artist) ([]*Album, error) {
 	var albums []*Album
 
 	result := Database.Preload("Artist").Find(&albums, "artist_id = ?", artist.ID)
@@ -64,7 +64,7 @@ func ListAlbumsBy(artist *Artist, page int) ([]*Album, error) {
 	return albums, result.Error
 }
 
-func ListAlbums(page int) ([]*Album, error) {
+func ListAlbums() ([]*Album, error) {
 	var albums []*Album
 
 	result := Database.Preload("Artist").Find(&albums)
@@ -72,7 +72,7 @@ func ListAlbums(page int) ([]*Album, error) {
 	return albums, result.Error
 }
 
-func ListTracksBy(artist *Artist, page int) ([]*Track, error) {
+func ListTracksBy(artist *Artist) ([]*Track, error) {
 	var tracks []*Track
 
 	result := Database.
@@ -108,7 +108,7 @@ func ListTracksWith(tag *Tag) ([]*Track, error) {
 	return tracks, result.Error
 }
 
-func ListTags(page int) ([]*Tag, error) {
+func ListTags() ([]*Tag, error) {
 	var tags []*Tag
 
 	result := Database.Find(&tags)
