@@ -59,6 +59,7 @@ func Initialize(dataFolder string) {
 		false,
 		nil,
 		nil,
+		0,
 		initialVolume,
 		0.0,
 	}
@@ -70,6 +71,13 @@ func Initialize(dataFolder string) {
 	})
 	RegisterHook(HOOK_VOLUME_CHANGED, func(params ...interface{}) {
 		State.Volume = params[0].(float64)
+	})
+	RegisterHook(HOOK_FILE_ENDED, func(params ...interface{}) {
+		index, err := MpvInstance.GetProperty("playlist-pos", mpv.FORMAT_INT64)
+		if err != nil {
+			utils.HandleError(err, "Cannot get playlist-pos")
+		}
+		State.QueueIndex = int(index.(int64))
 	})
 
 	// start the player
@@ -83,7 +91,7 @@ func GetCurrentTrack() *db.Track {
 	if len(State.Queue) == 0 {
 		return nil
 	}
-	return State.Queue[0]
+	return State.Queue[State.QueueIndex]
 }
 
 func AddToQueue(track *db.Track) {
