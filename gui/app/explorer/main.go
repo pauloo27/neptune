@@ -19,5 +19,8 @@ func CreateExplorer() *gtk.Notebook {
 	searchLabel, err := gtk.LabelNew("Search")
 	explorerContainer.AppendPage(createSearchPage(), searchLabel)
 
+	queueLabel, err := gtk.LabelNew("Queue")
+	explorerContainer.AppendPage(createQueuePage(), queueLabel)
+
 	return explorerContainer
 }
