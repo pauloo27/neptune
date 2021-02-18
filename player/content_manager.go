@@ -78,6 +78,9 @@ func PlayResult(result *youtube.YoutubeEntry) {
 				var err error
 				trackInfo, err = providers.FetchTrackInfo(videoInfo)
 				utils.HandleError(err, "Cannot fetch track info")
+				if trackInfo.Album.ImageURL == "" {
+					trackInfo.Album.ImageURL = videoInfo.GetThumbnail()
+				}
 			}
 			albumPath := path.Join(DataFolder, "albums", trackInfo.Album.MBID)
 			if _, err := os.Stat(albumPath); os.IsNotExist(err) {
