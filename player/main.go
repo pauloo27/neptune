@@ -168,3 +168,11 @@ func SetPosition(pos float64) error {
 	callHooks(HOOK_POSITION_CHANGED, err, pos)
 	return err
 }
+
+func PreviousTrack() error {
+	return MpvInstance.Command([]string{"playlist-prev"})
+}
+
+func NextTrack() error {
+	return MpvInstance.Command([]string{"playlist-next"})
+}

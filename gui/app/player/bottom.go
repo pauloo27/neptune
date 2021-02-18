@@ -143,7 +143,7 @@ func createTimeStampContainer() *gtk.Box {
 }
 
 func createButtonsContainer() *gtk.Box {
-	buttonsContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
+	buttonsContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 3)
 	utils.HandleError(err, "Cannot create box")
 
 	pausedIcon, err := gtk.ImageNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
@@ -169,9 +169,25 @@ func createButtonsContainer() *gtk.Box {
 		player.PlayPause()
 	})
 
+	prevButton, err := gtk.ButtonNewFromIconName("media-seek-backward", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+
+	prevButton.Connect("clicked", func() {
+		player.PreviousTrack()
+	})
+
+	nextButton, err := gtk.ButtonNewFromIconName("media-seek-forward", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+
+	nextButton.Connect("clicked", func() {
+		player.NextTrack()
+	})
+
 	buttonsContainer.SetHAlign(gtk.ALIGN_CENTER)
 
+	buttonsContainer.PackStart(prevButton, false, true, 0)
 	buttonsContainer.PackStart(pauseButton, false, true, 0)
+	buttonsContainer.PackStart(nextButton, false, true, 0)
 
 	return buttonsContainer
 }

@@ -14,6 +14,7 @@ import (
 func PlayTracks(tracks []*db.Track) {
 	RemoveCurrentFromPlaylist()
 	ClearPlaylist()
+	ClearQueue()
 
 	if len(tracks) == 0 {
 		return
@@ -31,6 +32,7 @@ func PlayTracks(tracks []*db.Track) {
 func PlayTrack(track *db.Track) {
 	RemoveCurrentFromPlaylist()
 	ClearPlaylist()
+	ClearQueue()
 
 	filePath := track.GetPath()
 	err := db.PlayTrack(track)
