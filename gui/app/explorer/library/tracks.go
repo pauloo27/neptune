@@ -28,7 +28,7 @@ func displayTrack(track *db.Track, showArtist bool) *gtk.Box {
 
 	var fullTitle string
 	if showArtist {
-		fullTitle = utils.Fmt("%s: %s", track.Album.Artist.Name, track.Title)
+		fullTitle = utils.Fmt("%s from %s", track.Title, track.Album.Artist.Name)
 	} else {
 		fullTitle = track.Title
 	}
@@ -41,24 +41,51 @@ func displayTrack(track *db.Track, showArtist bool) *gtk.Box {
 	return hbox
 }
 
+func appendTracks(container *gtk.Grid, tracks []*db.Track, offset int) int {
+	for i, track := range tracks {
+		container.Attach(displayTrack(track, true), 0, i+offset, 10, 1)
+	}
+
+	container.ShowAll()
+	return len(tracks)
+}
+
 func showTracks() *gtk.Grid {
 	container, err := gtk.GridNew()
 	utils.HandleError(err, "Cannot create grid")
 
+	offset := 0
+	page := 0
+
+	tracksContainer, err := gtk.GridNew()
+	utils.HandleError(err, "Cannot create grid")
+
+	tracksContainer.SetRowSpacing(1)
 	container.SetRowSpacing(1)
 
-	go func() {
-		tracks, err := db.ListTracks(1)
+	container.SetColumnHomogeneous(true)
+
+	loadPage := func(page int) {
+		tracks, err := db.ListTracks(page)
 		utils.HandleError(err, "Cannot list songs")
 
 		glib.IdleAdd(func() {
-			for i, track := range tracks {
-				container.Attach(displayTrack(track, true), 0, i, 10, 1)
-			}
-
-			container.ShowAll()
+			offset += appendTracks(tracksContainer, tracks, offset)
 		})
-	}()
+	}
+
+	loadMoreButton, err := gtk.ButtonNewWithLabel("Load more")
+	utils.HandleError(err, "Cannot create button")
+
+	loadMoreButton.Connect("clicked", func() {
+		page++
+		go loadPage(page)
+	})
+
+	container.Attach(tracksContainer, 0, 0, 1, 1)
+	container.Attach(loadMoreButton, 0, 1, 1, 1)
+
+	go loadPage(page)
 
 	return container
 }

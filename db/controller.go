@@ -10,6 +10,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	PAGE_SIZE = 50
+)
+
 func PlayTrack(track *Track) error {
 	return Database.Model(track).Update("play_count", gorm.Expr("play_count + 1")).Error
 }
@@ -43,7 +47,10 @@ func ListTracks(page int) ([]*Track, error) {
 
 	result := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").
-		Order("play_count desc").Find(&tracks)
+		Order("title asc").
+		Limit(PAGE_SIZE).
+		Offset(page * PAGE_SIZE).
+		Find(&tracks)
 
 	return tracks, result.Error
 }
