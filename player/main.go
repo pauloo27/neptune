@@ -2,6 +2,8 @@ package player
 
 import (
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/player/mpv"
@@ -60,6 +62,8 @@ func Initialize(dataFolder string) {
 		nil,
 		nil,
 		0,
+		false,
+		[]int{},
 		initialVolume,
 		0.0,
 	}
@@ -67,7 +71,6 @@ func Initialize(dataFolder string) {
 	// internal hooks
 	RegisterHook(HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
 		Play()
-		ClearPlaylist()
 	})
 	RegisterHook(HOOK_VOLUME_CHANGED, func(params ...interface{}) {
 		State.Volume = params[0].(float64)
@@ -94,14 +97,19 @@ func GetCurrentTrack() *db.Track {
 	if len(State.Queue) == 0 {
 		return nil
 	}
+	if State.Shuffled {
+		return State.Queue[State.ShuffIndexes[State.QueueIndex]]
+	}
 	return State.Queue[State.QueueIndex]
 }
 
 func AddToQueue(track *db.Track) {
 	State.Queue = append(State.Queue, track)
+	// TODO: if shuffled, update shuffindexes
 }
 
 func AddToTopOfQueue(track *db.Track) {
+	// TODO: if shuffled, update shuffindexes
 	newQueue := []*db.Track{track}
 	newQueue = append(newQueue, State.Queue...)
 	State.Queue = newQueue
@@ -109,13 +117,17 @@ func AddToTopOfQueue(track *db.Track) {
 
 func ClearQueue() {
 	State.Queue = []*db.Track{}
+	State.Shuffled = false
+	State.ShuffIndexes = []int{}
+	clearPlaylist()
+	removeCurrentFromPlaylist()
 }
 
-func ClearPlaylist() error {
+func clearPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-clear"})
 }
 
-func RemoveCurrentFromPlaylist() error {
+func removeCurrentFromPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-remove", "current"})
 }
 
@@ -167,6 +179,24 @@ func SetPosition(pos float64) error {
 	err := MpvInstance.SetProperty("time-pos", mpv.FORMAT_DOUBLE, pos)
 	callHooks(HOOK_POSITION_CHANGED, err, pos)
 	return err
+}
+
+func SetCurrentTrackID(id int) error {
+	return MpvInstance.SetProperty("playlist-pos", mpv.FORMAT_INT64, id)
+}
+
+func Shuffle() {
+	State.Shuffled = true
+	State.ShuffIndexes = []int{}
+	for i := 0; i < len(State.Queue); i++ {
+		State.ShuffIndexes = append(State.ShuffIndexes, i)
+	}
+
+	rand.Seed(time.Now().Unix())
+	rand.Shuffle(len(State.Queue), func(i, j int) {
+		State.ShuffIndexes[i], State.ShuffIndexes[j] = State.ShuffIndexes[j], State.ShuffIndexes[i]
+	})
+	SetCurrentTrackID(0)
 }
 
 func PreviousTrack() error {

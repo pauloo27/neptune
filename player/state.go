@@ -6,10 +6,12 @@ import (
 )
 
 type PlayerState struct {
-	Paused     bool
-	Fetching   *youtube.YoutubeEntry
-	Queue      []*db.Track
-	QueueIndex int
-	Volume     float64
-	Duration   float64
+	Paused       bool
+	Fetching     *youtube.YoutubeEntry
+	Queue        []*db.Track
+	QueueIndex   int
+	Shuffled     bool
+	ShuffIndexes []int
+	Volume       float64
+	Duration     float64
 }

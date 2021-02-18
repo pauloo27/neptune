@@ -12,8 +12,6 @@ import (
 )
 
 func PlayTracks(tracks []*db.Track) {
-	RemoveCurrentFromPlaylist()
-	ClearPlaylist()
 	ClearQueue()
 
 	if len(tracks) == 0 {
@@ -30,8 +28,6 @@ func PlayTracks(tracks []*db.Track) {
 }
 
 func PlayTrack(track *db.Track) {
-	RemoveCurrentFromPlaylist()
-	ClearPlaylist()
 	ClearQueue()
 
 	filePath := track.GetPath()
@@ -43,8 +39,7 @@ func PlayTrack(track *db.Track) {
 }
 
 func PlayResult(result *youtube.YoutubeEntry) {
-	RemoveCurrentFromPlaylist()
-	ClearPlaylist()
+	ClearQueue()
 
 	State.Fetching = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
