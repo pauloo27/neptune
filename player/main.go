@@ -93,14 +93,18 @@ func Initialize(dataFolder string) {
 	callHooks(HOOK_PLAYER_INITIALIZED, err)
 }
 
-func GetCurrentTrack() *db.Track {
-	if len(State.Queue) == 0 {
+func GetTrackAt(index int) *db.Track {
+	if index >= len(State.Queue) {
 		return nil
 	}
 	if State.Shuffled {
-		return State.Queue[State.ShuffIndexes[State.QueueIndex]]
+		return State.Queue[State.ShuffIndexes[index]]
 	}
-	return State.Queue[State.QueueIndex]
+	return State.Queue[index]
+}
+
+func GetCurrentTrack() *db.Track {
+	return GetTrackAt(State.QueueIndex)
 }
 
 func AddToQueue(track *db.Track) {

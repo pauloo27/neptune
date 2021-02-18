@@ -25,6 +25,7 @@ func PlayTracks(tracks []*db.Track) {
 		AddToQueue(track)
 		AppendFile(track.GetPath())
 	}
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayTrack(track *db.Track) {
@@ -36,6 +37,7 @@ func PlayTrack(track *db.Track) {
 
 	AddToTopOfQueue(track)
 	LoadFile(filePath)
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayResult(result *youtube.YoutubeEntry) {
@@ -96,4 +98,5 @@ func PlayResult(result *youtube.YoutubeEntry) {
 		LoadFile(track.GetPath())
 	}
 	State.Fetching = nil
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }

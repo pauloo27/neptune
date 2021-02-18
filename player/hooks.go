@@ -12,6 +12,7 @@ const (
 	HOOK_VOLUME_CHANGED
 	HOOK_POSITION_CHANGED
 	HOOK_RESULT_DOWNLOAD_STARTED
+	HOOK_QUEUE_UPDATE_FINISHED
 )
 
 type HookCallback func(params ...interface{})
