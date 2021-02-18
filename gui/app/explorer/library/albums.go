@@ -12,7 +12,7 @@ var albumsPage = &LibraryPage{"Albums", showAlbums}
 func displayAlbum(album *db.Album, showArtistName bool) *gtk.Button {
 	var displayTitle string
 	if showArtistName {
-		displayTitle = utils.Fmt("%s: %s", album.Artist.Name, album.Title)
+		displayTitle = utils.Fmt("%s by %s", album.Title, album.Artist.Name)
 	} else {
 		displayTitle = album.Title
 	}

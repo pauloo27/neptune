@@ -58,7 +58,7 @@ func ListTracks(page int) ([]*Track, error) {
 func ListArtists() ([]*Artist, error) {
 	var artists []*Artist
 
-	result := Database.Find(&artists)
+	result := Database.Order("name asc").Find(&artists)
 
 	return artists, result.Error
 }
@@ -74,7 +74,7 @@ func ListAlbumsBy(artist *Artist) ([]*Album, error) {
 func ListAlbums() ([]*Album, error) {
 	var albums []*Album
 
-	result := Database.Preload("Artist").Find(&albums)
+	result := Database.Preload("Artist").Order("title asc").Find(&albums)
 
 	return albums, result.Error
 }
@@ -118,7 +118,7 @@ func ListTracksWith(tag *Tag) ([]*Track, error) {
 func ListTags() ([]*Tag, error) {
 	var tags []*Tag
 
-	result := Database.Find(&tags)
+	result := Database.Order("name asc").Find(&tags)
 
 	return tags, result.Error
 }
