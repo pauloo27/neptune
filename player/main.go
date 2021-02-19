@@ -149,6 +149,10 @@ func AppendFile(filePath string) error {
 	return err
 }
 
+func Stop() error {
+	return MpvInstance.Command([]string{"stop"})
+}
+
 func PlayPause() error {
 	if State.Paused {
 		return Play()
@@ -205,6 +209,11 @@ func Shuffle() {
 
 func PreviousTrack() error {
 	return MpvInstance.Command([]string{"playlist-prev"})
+}
+
+func Exit() error {
+	callHooks(HOOK_PLAYER_EXIT)
+	return Stop()
 }
 
 func NextTrack() error {

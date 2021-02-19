@@ -13,6 +13,7 @@ const (
 	HOOK_POSITION_CHANGED
 	HOOK_RESULT_DOWNLOAD_STARTED
 	HOOK_QUEUE_UPDATE_FINISHED
+	HOOK_PLAYER_EXIT
 )
 
 type HookCallback func(params ...interface{})

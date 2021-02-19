@@ -9,7 +9,7 @@ import (
 
 var appWin *gtk.Window
 
-func Start() {
+func Start(onExit func()) {
 	gtk.Init(nil)
 
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
@@ -17,6 +17,7 @@ func Start() {
 
 	win.SetTitle("My Tune")
 	win.Connect("destroy", func() {
+		onExit()
 		gtk.MainQuit()
 	})
 

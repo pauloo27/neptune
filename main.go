@@ -47,5 +47,7 @@ func main() {
 	player.Initialize(dataFolder)
 
 	// start gui
-	app.Start()
+	app.Start(func() {
+		player.Exit()
+	})
 }
