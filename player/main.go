@@ -119,9 +119,9 @@ func addToTopOfQueue(track *db.Track) {
 	State.Queue = newQueue
 }
 
-func RemoveFromQueue(index int) {
+func RemoveFromQueue(index int) error {
 	if index >= len(State.Queue) {
-		return
+		return nil
 	}
 	newQueue := []*db.Track{}
 	for i := 0; i < len(State.Queue); i++ {
@@ -131,25 +131,40 @@ func RemoveFromQueue(index int) {
 		newQueue = append(newQueue, GetTrackAt(i))
 	}
 	State.Queue = newQueue
-	MpvInstance.CommandString(utils.Fmt("playlist-remove %d", index))
+	err := MpvInstance.CommandString(utils.Fmt("playlist-remove %d", index))
+	if err != nil {
+		return err
+	}
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 	// TODO: if shuffled, update shuffindexes
+	return nil
 }
 
-func ClearQueue() {
-	clearQueue()
+func ClearQueue() error {
+	err := clearQueue()
+	if err != nil {
+		return err
+	}
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	return nil
 }
 
-func clearQueue() {
+func clearQueue() error {
 	State.Queue = []*db.Track{}
 	State.Shuffled = false
 	State.ShuffIndexes = []int{}
-	clearPlaylist()
-	removeCurrentFromPlaylist()
+	return clearEntirePlaylist()
 }
 
-func clearPlaylist() error {
+func clearEntirePlaylist() error {
+	err := trimPlaylist()
+	if err != nil {
+		return err
+	}
+	return removeCurrentFromPlaylist()
+}
+
+func trimPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-clear"})
 }
 
@@ -167,6 +182,13 @@ func loadFile(filePath string) error {
 func appendFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
+	callHooks(HOOK_FILE_APPENDED, err, filePath)
+	return err
+}
+
+func appendFileAndPlay(filePath string) error {
+	loadMPRIS()
+	err := MpvInstance.Command([]string{"loadfile", filePath, "append-play"})
 	callHooks(HOOK_FILE_APPENDED, err, filePath)
 	return err
 }
@@ -211,12 +233,11 @@ func SetPosition(pos float64) error {
 	return err
 }
 
-func SetCurrentTrackID(id int) error {
+func setCurrentTrackID(id int) error {
 	return MpvInstance.SetProperty("playlist-pos", mpv.FORMAT_INT64, id)
 }
 
-func Shuffle() {
-	State.Shuffled = true
+func Shuffle() error {
 	State.ShuffIndexes = []int{}
 	for i := 0; i < len(State.Queue); i++ {
 		State.ShuffIndexes = append(State.ShuffIndexes, i)
@@ -226,7 +247,29 @@ func Shuffle() {
 	rand.Shuffle(len(State.Queue), func(i, j int) {
 		State.ShuffIndexes[i], State.ShuffIndexes[j] = State.ShuffIndexes[j], State.ShuffIndexes[i]
 	})
-	SetCurrentTrackID(0)
+
+	err := clearEntirePlaylist()
+	if err != nil {
+		return err
+	}
+
+	State.Shuffled = true
+	for i := 0; i < len(State.Queue); i++ {
+		if i == 0 {
+			err := appendFileAndPlay(GetTrackAt(i).GetPath())
+			if err != nil {
+				return err
+			}
+		} else {
+			err := appendFile(GetTrackAt(i).GetPath())
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	return nil
 }
 
 func PreviousTrack() error {

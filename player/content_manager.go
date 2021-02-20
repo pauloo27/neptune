@@ -92,11 +92,12 @@ func PlayResult(result *youtube.YoutubeEntry) {
 
 			addToTopOfQueue(track)
 			loadFile(filePath)
+			callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 		}()
 	} else {
 		addToTopOfQueue(track)
 		loadFile(track.GetPath())
+		callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 	}
 	State.Fetching = nil
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }

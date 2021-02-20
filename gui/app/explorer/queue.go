@@ -50,6 +50,10 @@ func createQueuePage() *gtk.Box {
 	shuffleButton, err := gtk.ButtonNewFromIconName("shuffle", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
 
+	shuffleButton.Connect("clicked", func() {
+		player.Shuffle()
+	})
+
 	clearQueueButton, err := gtk.ButtonNewFromIconName("delete", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
 
