@@ -21,7 +21,7 @@ func loadMPRIS() {
 			return false
 		}
 
-		err := MpvInstance.Command([]string{"load-script", path})
+		err := MpvInstance.CommandString("load-script " + path)
 		if err != nil {
 			utils.HandleError(err, "Cannot load mpris script at "+path)
 		}

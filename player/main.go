@@ -145,29 +145,29 @@ func ClearQueue() {
 }
 
 func clearPlaylist() error {
-	return MpvInstance.Command([]string{"playlist-clear"})
+	return MpvInstance.CommandString("playlist-clear")
 }
 
 func removeCurrentFromPlaylist() error {
-	return MpvInstance.Command([]string{"playlist-remove", "current"})
+	return MpvInstance.CommandString("playlist-remove current")
 }
 
 func LoadFile(filePath string) error {
 	loadMPRIS()
-	err := MpvInstance.Command([]string{"loadfile", filePath})
+	err := MpvInstance.CommandString("loadfile " + filePath)
 	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
 	return err
 }
 
 func AppendFile(filePath string) error {
 	loadMPRIS()
-	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
+	err := MpvInstance.CommandString("loadfile " + filePath + " append")
 	callHooks(HOOK_FILE_APPENDED, err, filePath)
 	return err
 }
 
 func Stop() error {
-	return MpvInstance.Command([]string{"stop"})
+	return MpvInstance.CommandString("stop")
 }
 
 func PlayPause() error {
@@ -225,7 +225,7 @@ func Shuffle() {
 }
 
 func PreviousTrack() error {
-	return MpvInstance.Command([]string{"playlist-prev"})
+	return MpvInstance.CommandString("playlist-prev")
 }
 
 func Exit() error {
@@ -234,5 +234,5 @@ func Exit() error {
 }
 
 func NextTrack() error {
-	return MpvInstance.Command([]string{"playlist-next"})
+	return MpvInstance.CommandString("playlist-next")
 }
