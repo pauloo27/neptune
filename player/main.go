@@ -230,7 +230,7 @@ func PreviousTrack() error {
 
 func Exit() error {
 	callHooks(HOOK_PLAYER_EXIT)
-	return Stop()
+	return MpvInstance.CommandString("exit 0")
 }
 
 func NextTrack() error {
