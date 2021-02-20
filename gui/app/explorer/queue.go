@@ -42,20 +42,40 @@ func createQueuePage() *gtk.Box {
 	container, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 	utils.HandleError(err, "Cannot create box")
 
+	headerContainer, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
+	utils.HandleError(err, "Cannot create box")
+
+	headerContainer.SetHAlign(gtk.ALIGN_CENTER)
+
+	shuffleButton, err := gtk.ButtonNewFromIconName("shuffle", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+
+	clearQueueButton, err := gtk.ButtonNewFromIconName("delete", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+
+	headerContainer.PackStart(shuffleButton, false, false, 1)
+	headerContainer.PackStart(clearQueueButton, false, false, 1)
+
+	queueContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
+	utils.HandleError(err, "Cannot create box")
+
+	container.PackStart(headerContainer, false, false, 1)
+	container.PackStart(queueContainer, false, false, 1)
+
 	player.RegisterHook(
 		player.HOOK_QUEUE_UPDATE_FINISHED,
 		func(params ...interface{}) {
 			fmt.Println("Updating queue...")
 			glib.IdleAdd(func() {
-				container.GetChildren().Foreach(func(item interface{}) {
+				queueContainer.GetChildren().Foreach(func(item interface{}) {
 					item.(*gtk.Widget).Destroy()
 				})
 				for i := 0; i < len(player.State.Queue); i++ {
 					track := player.GetTrackAt(i)
 
-					container.PackStart(createQueueEntry(track, i), false, false, 1)
+					queueContainer.PackStart(createQueueEntry(track, i), false, false, 1)
 				}
-				container.ShowAll()
+				queueContainer.ShowAll()
 			})
 		},
 	)
