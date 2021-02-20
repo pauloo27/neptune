@@ -119,6 +119,23 @@ func AddToTopOfQueue(track *db.Track) {
 	State.Queue = newQueue
 }
 
+func RemoveFromQueue(index int) {
+	if index >= len(State.Queue) {
+		return
+	}
+	newQueue := []*db.Track{}
+	for i := 0; i < len(State.Queue); i++ {
+		if i == index {
+			continue
+		}
+		newQueue = append(newQueue, GetTrackAt(i))
+	}
+	State.Queue = newQueue
+	MpvInstance.CommandString(utils.Fmt("playlist-remove %d", index))
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	// TODO: if shuffled, update shuffindexes
+}
+
 func ClearQueue() {
 	State.Queue = []*db.Track{}
 	State.Shuffled = false
