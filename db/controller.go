@@ -47,7 +47,7 @@ func ListTracks(page int) ([]*Track, error) {
 
 	result := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").
-		Order("title asc").
+		Order("title collate nocase asc").
 		Limit(PAGE_SIZE).
 		Offset(page * PAGE_SIZE).
 		Find(&tracks)
@@ -58,7 +58,7 @@ func ListTracks(page int) ([]*Track, error) {
 func ListArtists() ([]*Artist, error) {
 	var artists []*Artist
 
-	result := Database.Order("name asc").Find(&artists)
+	result := Database.Order("name collate nocase asc").Find(&artists)
 
 	return artists, result.Error
 }
@@ -74,7 +74,7 @@ func ListAlbumsBy(artist *Artist) ([]*Album, error) {
 func ListAlbums() ([]*Album, error) {
 	var albums []*Album
 
-	result := Database.Preload("Artist").Order("title asc").Find(&albums)
+	result := Database.Preload("Artist").Order("title collate nocase asc").Find(&albums)
 
 	return albums, result.Error
 }
@@ -84,7 +84,7 @@ func ListTracksBy(artist *Artist) ([]*Track, error) {
 
 	result := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").Joins("Album").
-		Order("play_count desc").Find(&tracks, "Album__artist_id = ?", artist.ID)
+		Order("tracks.title collate nocase asc").Find(&tracks, "Album__artist_id = ?", artist.ID)
 
 	return tracks, result.Error
 }
@@ -94,7 +94,7 @@ func ListTracksIn(album *Album) ([]*Track, error) {
 
 	result := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").
-		Find(&tracks, "album_id", album.ID)
+		Order("title collate nocase asc").Find(&tracks, "album_id", album.ID)
 
 	return tracks, result.Error
 }
@@ -118,7 +118,7 @@ func ListTracksWith(tag *Tag) ([]*Track, error) {
 func ListTags() ([]*Tag, error) {
 	var tags []*Tag
 
-	result := Database.Order("name asc").Find(&tags)
+	result := Database.Order("name collate nocase asc").Find(&tags)
 
 	return tags, result.Error
 }
