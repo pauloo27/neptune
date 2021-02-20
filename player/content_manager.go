@@ -12,36 +12,36 @@ import (
 )
 
 func PlayTracks(tracks []*db.Track) {
-	ClearQueue()
+	clearQueue()
 
 	if len(tracks) == 0 {
 		return
 	}
 
-	AddToTopOfQueue(tracks[0])
-	LoadFile(tracks[0].GetPath())
+	addToTopOfQueue(tracks[0])
+	loadFile(tracks[0].GetPath())
 
 	for _, track := range tracks[1:] {
-		AddToQueue(track)
-		AppendFile(track.GetPath())
+		addToQueue(track)
+		appendFile(track.GetPath())
 	}
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayTrack(track *db.Track) {
-	ClearQueue()
+	clearQueue()
 
 	filePath := track.GetPath()
 	err := db.PlayTrack(track)
 	utils.HandleError(err, "Cannot play track")
 
-	AddToTopOfQueue(track)
-	LoadFile(filePath)
+	addToTopOfQueue(track)
+	loadFile(filePath)
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayResult(result *youtube.YoutubeEntry) {
-	ClearQueue()
+	clearQueue()
 
 	State.Fetching = result
 	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
@@ -90,12 +90,12 @@ func PlayResult(result *youtube.YoutubeEntry) {
 			track, err = db.StoreTrack(videoInfo, trackInfo)
 			utils.HandleError(err, "Cannot store track")
 
-			AddToTopOfQueue(track)
-			LoadFile(filePath)
+			addToTopOfQueue(track)
+			loadFile(filePath)
 		}()
 	} else {
-		AddToTopOfQueue(track)
-		LoadFile(track.GetPath())
+		addToTopOfQueue(track)
+		loadFile(track.GetPath())
 	}
 	State.Fetching = nil
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)

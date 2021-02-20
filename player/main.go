@@ -107,12 +107,12 @@ func GetCurrentTrack() *db.Track {
 	return GetTrackAt(State.QueueIndex)
 }
 
-func AddToQueue(track *db.Track) {
+func addToQueue(track *db.Track) {
 	State.Queue = append(State.Queue, track)
 	// TODO: if shuffled, update shuffindexes
 }
 
-func AddToTopOfQueue(track *db.Track) {
+func addToTopOfQueue(track *db.Track) {
 	// TODO: if shuffled, update shuffindexes
 	newQueue := []*db.Track{track}
 	newQueue = append(newQueue, State.Queue...)
@@ -137,6 +137,11 @@ func RemoveFromQueue(index int) {
 }
 
 func ClearQueue() {
+	clearQueue()
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+}
+
+func clearQueue() {
 	State.Queue = []*db.Track{}
 	State.Shuffled = false
 	State.ShuffIndexes = []int{}
@@ -152,14 +157,14 @@ func removeCurrentFromPlaylist() error {
 	return MpvInstance.Command([]string{"playlist-remove", "current"})
 }
 
-func LoadFile(filePath string) error {
+func loadFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath})
 	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
 	return err
 }
 
-func AppendFile(filePath string) error {
+func appendFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
 	callHooks(HOOK_FILE_APPENDED, err, filePath)

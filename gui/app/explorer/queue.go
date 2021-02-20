@@ -53,6 +53,10 @@ func createQueuePage() *gtk.Box {
 	clearQueueButton, err := gtk.ButtonNewFromIconName("delete", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
 
+	clearQueueButton.Connect("clicked", func() {
+		player.ClearQueue()
+	})
+
 	headerContainer.PackStart(shuffleButton, false, false, 1)
 	headerContainer.PackStart(clearQueueButton, false, false, 1)
 
