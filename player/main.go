@@ -62,8 +62,6 @@ func Initialize(dataFolder string) {
 		nil,
 		nil,
 		0,
-		false,
-		[]int{},
 		initialVolume,
 		0.0,
 	}
@@ -97,9 +95,6 @@ func GetTrackAt(index int) *db.Track {
 	if index >= len(State.Queue) {
 		return nil
 	}
-	if State.Shuffled {
-		return State.Queue[State.ShuffIndexes[index]]
-	}
 	return State.Queue[index]
 }
 
@@ -109,14 +104,22 @@ func GetCurrentTrack() *db.Track {
 
 func addToQueue(track *db.Track) {
 	State.Queue = append(State.Queue, track)
-	// TODO: if shuffled, update shuffindexes
 }
 
 func addToTopOfQueue(track *db.Track) {
-	// TODO: if shuffled, update shuffindexes
 	newQueue := []*db.Track{track}
 	newQueue = append(newQueue, State.Queue...)
 	State.Queue = newQueue
+}
+
+func MoveUpInQueue(index int) error {
+	if index == 0 {
+		return nil
+	}
+	State.Queue[index-1], State.Queue[index] = State.Queue[index], State.Queue[index-1]
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	// TODO: mpv
+	return nil
 }
 
 func RemoveFromQueue(index int) error {
@@ -136,7 +139,6 @@ func RemoveFromQueue(index int) error {
 		return err
 	}
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
-	// TODO: if shuffled, update shuffindexes
 	return nil
 }
 
@@ -151,8 +153,6 @@ func ClearQueue() error {
 
 func clearQueue() error {
 	State.Queue = []*db.Track{}
-	State.Shuffled = false
-	State.ShuffIndexes = []int{}
 	return clearEntirePlaylist()
 }
 
@@ -237,39 +237,15 @@ func setCurrentTrackID(id int) error {
 	return MpvInstance.SetProperty("playlist-pos", mpv.FORMAT_INT64, id)
 }
 
-func Shuffle() error {
-	State.ShuffIndexes = []int{}
-	for i := 0; i < len(State.Queue); i++ {
-		State.ShuffIndexes = append(State.ShuffIndexes, i)
-	}
+func Shuffle() {
+	newQueue := State.Queue
 
 	rand.Seed(time.Now().Unix())
 	rand.Shuffle(len(State.Queue), func(i, j int) {
-		State.ShuffIndexes[i], State.ShuffIndexes[j] = State.ShuffIndexes[j], State.ShuffIndexes[i]
+		newQueue[i], newQueue[j] = newQueue[j], newQueue[i]
 	})
 
-	err := clearEntirePlaylist()
-	if err != nil {
-		return err
-	}
-
-	State.Shuffled = true
-	for i := 0; i < len(State.Queue); i++ {
-		if i == 0 {
-			err := appendFileAndPlay(GetTrackAt(i).GetPath())
-			if err != nil {
-				return err
-			}
-		} else {
-			err := appendFile(GetTrackAt(i).GetPath())
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
-	return nil
+	PlayTracks(newQueue)
 }
 
 func PreviousTrack() error {
