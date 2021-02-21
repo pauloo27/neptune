@@ -56,7 +56,7 @@ func doSearch(searchTerm string) {
 					})
 
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",
-						utils.EnforceSize(result.Title, 40),
+						utils.EnforceSize(result.Title, 60),
 						utils.EnforceSize(result.Uploader, 20),
 						result.DisplayDuration,
 					))
