@@ -112,13 +112,43 @@ func addToTopOfQueue(track *db.Track) {
 	State.Queue = newQueue
 }
 
+func moveInQueue(index int, up bool) error {
+	offset := 1
+	if up {
+		offset = -1
+	}
+	State.Queue[index+offset], State.Queue[index] = State.Queue[index], State.Queue[index+offset]
+
+	var from, to int
+	if up {
+		from, to = index, index+offset
+	} else {
+		to, from = index, index+offset
+	}
+	return MpvInstance.CommandString(utils.Fmt("playlist-move %d %d", from, to))
+}
+
 func MoveUpInQueue(index int) error {
 	if index == 0 {
 		return nil
 	}
-	State.Queue[index-1], State.Queue[index] = State.Queue[index], State.Queue[index-1]
+	err := moveInQueue(index, true)
+	if err != nil {
+		return err
+	}
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
-	// TODO: mpv
+	return nil
+}
+
+func MoveDownInQueue(index int) error {
+	if index >= len(State.Queue)-1 {
+		return nil
+	}
+	err := moveInQueue(index, false)
+	if err != nil {
+		return err
+	}
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 	return nil
 }
 

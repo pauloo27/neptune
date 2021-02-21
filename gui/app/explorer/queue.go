@@ -20,8 +20,16 @@ func createQueueEntry(track *db.Track, queueIndex int) *gtk.Box {
 	moveUpButton, err := gtk.ButtonNewFromIconName("go-up", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
 
+	moveUpButton.Connect("clicked", func() {
+		player.MoveUpInQueue(queueIndex)
+	})
+
 	moveDownButton, err := gtk.ButtonNewFromIconName("go-down", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
+
+	moveDownButton.Connect("clicked", func() {
+		player.MoveDownInQueue(queueIndex)
+	})
 
 	removeButton, err := gtk.ButtonNewFromIconName("delete", gtk.ICON_SIZE_BUTTON)
 	utils.HandleError(err, "Cannot create button")
