@@ -20,10 +20,17 @@ func displayTrack(track *db.Track, showArtist bool) *gtk.Box {
 	hbox.SetMarginEnd(5)
 
 	playButton, err := gtk.ButtonNewFromIconName("media-playback-start", gtk.ICON_SIZE_BUTTON)
-	utils.HandleError(err, "Cannot create label")
+	utils.HandleError(err, "Cannot create button")
 
 	playButton.Connect("clicked", func() {
 		go player.PlayTrack(track)
+	})
+
+	addToQueueButton, err := gtk.ButtonNewFromIconName("list-add", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create button")
+
+	addToQueueButton.Connect("clicked", func() {
+		go player.AddTrackToQueue(track)
 	})
 
 	var fullTitle string
@@ -37,6 +44,7 @@ func displayTrack(track *db.Track, showArtist bool) *gtk.Box {
 	utils.HandleError(err, "Cannot create label")
 
 	hbox.PackStart(playButton, false, false, 1)
+	hbox.PackStart(addToQueueButton, false, false, 1)
 	hbox.PackStart(songLabel, false, false, 1)
 	return hbox
 }

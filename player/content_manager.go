@@ -31,12 +31,19 @@ func PlayTracks(tracks []*db.Track) {
 func PlayTrack(track *db.Track) {
 	clearQueue()
 
-	filePath := track.GetPath()
-	err := db.PlayTrack(track)
-	utils.HandleError(err, "Cannot play track")
+	go func() {
+		err := db.PlayTrack(track)
+		utils.HandleError(err, "Cannot play track")
+	}()
 
 	addToTopOfQueue(track)
-	loadFile(filePath)
+	loadFile(track.GetPath())
+	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+}
+
+func AddTrackToQueue(track *db.Track) {
+	addToQueue(track)
+	appendFile(track.GetPath())
 	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
 }
 
