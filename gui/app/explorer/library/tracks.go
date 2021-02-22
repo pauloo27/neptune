@@ -35,7 +35,7 @@ func displayTrack(track *db.Track, showArtist bool) *gtk.Box {
 
 	var fullTitle string
 	if showArtist {
-		fullTitle = utils.Fmt("%s from %s", track.Title, track.Album.Artist.Name)
+		fullTitle = utils.Fmt("%s from %s", utils.EnforceSize(track.Title, 50), utils.EnforceSize(track.Album.Artist.Name, 20))
 	} else {
 		fullTitle = track.Title
 	}
