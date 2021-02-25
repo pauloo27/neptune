@@ -46,7 +46,7 @@ func createQueueEntry(track *db.Track, queueIndex int) *gtk.Box {
 	return container
 }
 
-func createQueuePage() *gtk.Box {
+func createQueuePage() *gtk.ScrolledWindow {
 	container, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 	utils.HandleError(err, "Cannot create box")
 
@@ -96,5 +96,10 @@ func createQueuePage() *gtk.Box {
 		},
 	)
 
-	return container
+	scrolledContainer, err := gtk.ScrolledWindowNew(nil, nil)
+	utils.HandleError(err, "Cannot create scrolled window")
+
+	scrolledContainer.Add(container)
+
+	return scrolledContainer
 }
