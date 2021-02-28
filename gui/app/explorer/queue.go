@@ -1,8 +1,6 @@
 package explorer
 
 import (
-	"fmt"
-
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
@@ -84,7 +82,6 @@ func createQueuePage() *gtk.ScrolledWindow {
 	loopButton.SetImage(loopNoneIcon)
 
 	loopButton.Connect("clicked", func() {
-		fmt.Println("clicked")
 		player.NextLoopStatus()
 	})
 
