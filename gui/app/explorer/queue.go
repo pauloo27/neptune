@@ -69,8 +69,44 @@ func createQueuePage() *gtk.ScrolledWindow {
 		player.ClearQueue()
 	})
 
+	loopButton, err := gtk.ButtonNew()
+	utils.HandleError(err, "Cannot create button")
+
+	loopNoneIcon, err := gtk.ImageNewFromIconName("format-justify-fill", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create image")
+
+	loopTrackIcon, err := gtk.ImageNewFromIconName("media-playlist-repeat-song", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create image")
+
+	loopQueueIcon, err := gtk.ImageNewFromIconName("media-playlist-repeat", gtk.ICON_SIZE_BUTTON)
+	utils.HandleError(err, "Cannot create image")
+
+	loopButton.SetImage(loopNoneIcon)
+
+	loopButton.Connect("clicked", func() {
+		fmt.Println("clicked")
+		player.NextLoopStatus()
+	})
+
+	player.RegisterHook(player.HOOK_LOOP_STATUS_CHANGED, func(params ...interface{}) {
+		loopStatus := player.GetLoopStatus()
+		glib.IdleAdd(func() {
+			var icon *gtk.Image
+			switch loopStatus {
+			case player.LOOP_NONE:
+				icon = loopNoneIcon
+			case player.LOOP_TRACK:
+				icon = loopTrackIcon
+			case player.LOOP_QUEUE:
+				icon = loopQueueIcon
+			}
+			loopButton.SetImage(icon)
+		})
+	})
+
 	headerContainer.PackStart(shuffleButton, false, false, 1)
 	headerContainer.PackStart(clearQueueButton, false, false, 1)
+	headerContainer.PackStart(loopButton, false, false, 1)
 
 	queueContainer, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 1)
 	utils.HandleError(err, "Cannot create box")
@@ -81,7 +117,6 @@ func createQueuePage() *gtk.ScrolledWindow {
 	player.RegisterHook(
 		player.HOOK_QUEUE_UPDATE_FINISHED,
 		func(params ...interface{}) {
-			fmt.Println("Updating queue...")
 			glib.IdleAdd(func() {
 				queueContainer.GetChildren().Foreach(func(item interface{}) {
 					item.(*gtk.Widget).Destroy()
