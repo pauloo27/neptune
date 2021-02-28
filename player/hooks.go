@@ -14,6 +14,7 @@ const (
 	HOOK_RESULT_DOWNLOAD_STARTED
 	HOOK_QUEUE_UPDATE_FINISHED
 	HOOK_PLAYER_EXIT
+	HOOK_LOOP_STATUS_CHANGED
 )
 
 type HookCallback func(params ...interface{})

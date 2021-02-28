@@ -52,6 +52,10 @@ func Initialize(dataFolder string) {
 	// add observers
 	err = MpvInstance.ObserveProperty(0, "volume", mpv.FORMAT_DOUBLE)
 	utils.HandleError(err, "Cannot observer volume property")
+	err = MpvInstance.ObserveProperty(0, "loop-file", mpv.FORMAT_FLAG)
+	utils.HandleError(err, "Cannot observer loop-file property")
+	err = MpvInstance.ObserveProperty(0, "loop-playlist", mpv.FORMAT_FLAG)
+	utils.HandleError(err, "Cannot observer loop-playlist property")
 
 	// start event listener
 	startEventHandler()
@@ -64,6 +68,7 @@ func Initialize(dataFolder string) {
 		0,
 		initialVolume,
 		0.0,
+		false, false,
 	}
 
 	// internal hooks
@@ -265,6 +270,44 @@ func SetPosition(pos float64) error {
 
 func setCurrentTrackID(id int) error {
 	return MpvInstance.SetProperty("playlist-pos", mpv.FORMAT_INT64, id)
+}
+
+func NextLoopStatus() error {
+	newLoopStatus := LOOP_NONE
+	switch GetLoopStatus() {
+	case LOOP_NONE:
+		newLoopStatus = LOOP_TRACK
+	case LOOP_TRACK:
+		newLoopStatus = LOOP_QUEUE
+	}
+	return SetLoopStatus(newLoopStatus)
+}
+
+func SetLoopStatus(loopStatus LoopStatus) error {
+	track, queue := false, false
+
+	if loopStatus == LOOP_TRACK {
+		track = true
+	}
+	if loopStatus == LOOP_QUEUE {
+		queue = true
+	}
+
+	err := MpvInstance.SetProperty("loop-file", mpv.FORMAT_FLAG, track)
+	if err != nil {
+		return err
+	}
+	return MpvInstance.SetProperty("loop-playlist", mpv.FORMAT_FLAG, queue)
+}
+
+func GetLoopStatus() LoopStatus {
+	if State.loopFile {
+		return LOOP_TRACK
+	}
+	if State.loopPlaylist {
+		return LOOP_QUEUE
+	}
+	return LOOP_NONE
 }
 
 func Shuffle() {
