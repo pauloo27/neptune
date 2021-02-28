@@ -75,7 +75,7 @@ func showTracks() *gtk.Grid {
 
 	loadPage := func(page int) {
 		tracks, err := db.ListTracks(page)
-		utils.HandleError(err, "Cannot list songs")
+		utils.HandleError(err, "Cannot list tracks")
 
 		glib.IdleAdd(func() {
 			offset += appendTracks(tracksContainer, tracks, offset)
@@ -90,8 +90,14 @@ func showTracks() *gtk.Grid {
 		go loadPage(page)
 	})
 
-	container.Attach(tracksContainer, 0, 0, 1, 1)
-	container.Attach(loadMoreButton, 0, 1, 1, 1)
+	container.Attach(createFuturePlayAll("Play all tracks", func() []*db.Track {
+		tracks, err := db.ListAllTracks()
+		utils.HandleError(err, "Cannot list all tracks")
+
+		return tracks
+	}), 0, 0, 1, 1)
+	container.Attach(tracksContainer, 0, 1, 1, 1)
+	container.Attach(loadMoreButton, 0, 2, 1, 1)
 
 	go loadPage(page)
 

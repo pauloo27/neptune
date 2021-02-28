@@ -42,6 +42,17 @@ func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
 	return &track, err
 }
 
+func ListAllTracks() ([]*Track, error) {
+	var tracks []*Track
+
+	result := Database.
+		Preload("Album.Artist").Preload("Tags.Tag").
+		Order("title collate nocase asc").
+		Find(&tracks)
+
+	return tracks, result.Error
+}
+
 func ListTracks(page int) ([]*Track, error) {
 	var tracks []*Track
 
