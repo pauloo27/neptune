@@ -7,6 +7,7 @@ import (
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/gui/app"
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
 )
@@ -39,7 +40,7 @@ func main() {
 	db.Connect(dataFolder)
 
 	// add hook (not useful yet)
-	player.RegisterHook(player.HOOK_PLAYER_INITIALIZED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_PLAYER_INITIALIZED, func(params ...interface{}) {
 		fmt.Println("The player was initialized")
 	})
 

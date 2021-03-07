@@ -1,21 +1,4 @@
-package player
-
-const (
-	HOOK_PLAYER_INITIALIZED = iota
-	HOOK_RESULT_FETCH_STARTED
-	HOOK_FILE_LOAD_STARTED
-	HOOK_FILE_LOADED
-	HOOK_FILE_ENDED
-	HOOK_FILE_APPENDED
-	HOOK_PLAYBACK_PAUSED
-	HOOK_PLAYBACK_RESUMED
-	HOOK_VOLUME_CHANGED
-	HOOK_POSITION_CHANGED
-	HOOK_RESULT_DOWNLOAD_STARTED
-	HOOK_QUEUE_UPDATE_FINISHED
-	HOOK_PLAYER_EXIT
-	HOOK_LOOP_STATUS_CHANGED
-)
+package hook
 
 type HookCallback func(params ...interface{})
 
@@ -35,7 +18,7 @@ func RegisterHooks(hookTypes []int, cb HookCallback) {
 	}
 }
 
-func callHooks(hookType int, params ...interface{}) {
+func CallHooks(hookType int, params ...interface{}) {
 	if hooks, ok := hooks[hookType]; ok {
 		for _, hook := range hooks {
 			(*hook)(params...)

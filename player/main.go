@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Pauloo27/neptune/db"
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player/mpv"
 	"github.com/Pauloo27/neptune/utils"
 )
@@ -72,13 +73,13 @@ func Initialize(dataFolder string) {
 	}
 
 	// internal hooks
-	RegisterHook(HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_FILE_LOAD_STARTED, func(params ...interface{}) {
 		Play()
 	})
-	RegisterHook(HOOK_VOLUME_CHANGED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_VOLUME_CHANGED, func(params ...interface{}) {
 		State.Volume = params[0].(float64)
 	})
-	RegisterHook(HOOK_FILE_ENDED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_FILE_ENDED, func(params ...interface{}) {
 		index, err := MpvInstance.GetProperty("playlist-pos", mpv.FORMAT_INT64)
 		if err != nil {
 			utils.HandleError(err, "Cannot get playlist-pos")
@@ -93,7 +94,7 @@ func Initialize(dataFolder string) {
 	err = MpvInstance.Initialize()
 	utils.HandleError(err, "Cannot initialize mpv")
 
-	callHooks(HOOK_PLAYER_INITIALIZED, err)
+	hook.CallHooks(hook.HOOK_PLAYER_INITIALIZED, err)
 }
 
 func GetTrackAt(index int) *db.Track {
@@ -141,7 +142,7 @@ func MoveUpInQueue(index int) error {
 	if err != nil {
 		return err
 	}
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 	return nil
 }
 
@@ -153,7 +154,7 @@ func MoveDownInQueue(index int) error {
 	if err != nil {
 		return err
 	}
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 	return nil
 }
 
@@ -173,7 +174,7 @@ func RemoveFromQueue(index int) error {
 	if err != nil {
 		return err
 	}
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 	return nil
 }
 
@@ -182,7 +183,7 @@ func ClearQueue() error {
 	if err != nil {
 		return err
 	}
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 	return nil
 }
 
@@ -210,21 +211,21 @@ func removeCurrentFromPlaylist() error {
 func loadFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath})
-	callHooks(HOOK_FILE_LOAD_STARTED, err, filePath)
+	hook.CallHooks(hook.HOOK_FILE_LOAD_STARTED, err, filePath)
 	return err
 }
 
 func appendFile(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath, "append"})
-	callHooks(HOOK_FILE_APPENDED, err, filePath)
+	hook.CallHooks(hook.HOOK_FILE_APPENDED, err, filePath)
 	return err
 }
 
 func appendFileAndPlay(filePath string) error {
 	loadMPRIS()
 	err := MpvInstance.Command([]string{"loadfile", filePath, "append-play"})
-	callHooks(HOOK_FILE_APPENDED, err, filePath)
+	hook.CallHooks(hook.HOOK_FILE_APPENDED, err, filePath)
 	return err
 }
 
@@ -264,7 +265,7 @@ func GetPosition() (float64, error) {
 
 func SetPosition(pos float64) error {
 	err := MpvInstance.SetProperty("time-pos", mpv.FORMAT_DOUBLE, pos)
-	callHooks(HOOK_POSITION_CHANGED, err, pos)
+	hook.CallHooks(hook.HOOK_POSITION_CHANGED, err, pos)
 	return err
 }
 
@@ -326,7 +327,7 @@ func PreviousTrack() error {
 }
 
 func Exit() error {
-	callHooks(HOOK_PLAYER_EXIT)
+	hook.CallHooks(hook.HOOK_PLAYER_EXIT)
 	return MpvInstance.CommandString("exit 0")
 }
 

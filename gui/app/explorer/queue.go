@@ -2,6 +2,7 @@ package explorer
 
 import (
 	"github.com/Pauloo27/neptune/db"
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/glib"
@@ -85,7 +86,7 @@ func createQueuePage() *gtk.ScrolledWindow {
 		player.NextLoopStatus()
 	})
 
-	player.RegisterHook(player.HOOK_LOOP_STATUS_CHANGED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_LOOP_STATUS_CHANGED, func(params ...interface{}) {
 		loopStatus := player.GetLoopStatus()
 		glib.IdleAdd(func() {
 			var icon *gtk.Image
@@ -111,8 +112,8 @@ func createQueuePage() *gtk.ScrolledWindow {
 	container.PackStart(headerContainer, false, false, 1)
 	container.PackStart(queueContainer, false, false, 1)
 
-	player.RegisterHook(
-		player.HOOK_QUEUE_UPDATE_FINISHED,
+	hook.RegisterHook(
+		hook.HOOK_QUEUE_UPDATE_FINISHED,
 		func(params ...interface{}) {
 			glib.IdleAdd(func() {
 				queueContainer.GetChildren().Foreach(func(item interface{}) {

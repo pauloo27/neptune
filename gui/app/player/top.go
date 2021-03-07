@@ -1,6 +1,7 @@
 package player
 
 import (
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/gdk"
@@ -18,7 +19,7 @@ func createPlayerTop() *gtk.Box {
 
 	albumArt.SetVAlign(gtk.ALIGN_CENTER)
 
-	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_FILE_LOADED, func(params ...interface{}) {
 		imagePath := player.GetCurrentTrack().Album.GetAlbumArtPath()
 		glib.IdleAdd(func() {
 			imagePix, err := gdk.PixbufNewFromFileAtScale(imagePath, 300, 300, true)

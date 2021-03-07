@@ -6,6 +6,7 @@ import (
 	"path"
 
 	"github.com/Pauloo27/neptune/db"
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
@@ -25,7 +26,7 @@ func PlayTracks(tracks []*db.Track) {
 		addToQueue(track)
 		appendFile(track.GetPath())
 	}
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayTrack(track *db.Track) {
@@ -38,24 +39,24 @@ func PlayTrack(track *db.Track) {
 
 	addToTopOfQueue(track)
 	loadFile(track.GetPath())
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func AddTrackToQueue(track *db.Track) {
 	addToQueue(track)
 	appendFile(track.GetPath())
-	callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 }
 
 func PlayResult(result *youtube.YoutubeEntry) {
 	clearQueue()
 
 	State.Fetching = result
-	callHooks(HOOK_RESULT_FETCH_STARTED, nil)
+	hook.CallHooks(hook.HOOK_RESULT_FETCH_STARTED, nil)
 	track, err := db.PlayEntry(result)
 	utils.HandleError(err, "Cannot find track")
 	if track == nil {
-		callHooks(HOOK_RESULT_DOWNLOAD_STARTED, nil)
+		hook.CallHooks(hook.HOOK_RESULT_DOWNLOAD_STARTED, nil)
 		go func() {
 			fmt.Println("Downloading file...")
 			tmpFile := path.Join(DataFolder, "wip_downloads", result.ID+".m4a")
@@ -99,12 +100,12 @@ func PlayResult(result *youtube.YoutubeEntry) {
 
 			addToTopOfQueue(track)
 			loadFile(filePath)
-			callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+			hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 		}()
 	} else {
 		addToTopOfQueue(track)
 		loadFile(track.GetPath())
-		callHooks(HOOK_QUEUE_UPDATE_FINISHED)
+		hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
 	}
 	State.Fetching = nil
 }

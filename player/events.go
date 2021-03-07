@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player/mpv"
 	"github.com/Pauloo27/neptune/utils"
 )
@@ -12,21 +13,21 @@ func handlePropertyChange(data *mpv.EventProperty) {
 	switch data.Name {
 	case "volume":
 		volume := *(*float64)(data.Data.(unsafe.Pointer))
-		callHooks(HOOK_VOLUME_CHANGED, volume)
+		hook.CallHooks(hook.HOOK_VOLUME_CHANGED, volume)
 	case "loop-file":
 		if data.Data.(unsafe.Pointer) == nil {
 			State.loopFile = true
 		} else {
 			State.loopFile = *(*bool)(data.Data.(unsafe.Pointer))
 		}
-		callHooks(HOOK_LOOP_STATUS_CHANGED)
+		hook.CallHooks(hook.HOOK_LOOP_STATUS_CHANGED)
 	case "loop-playlist":
 		if data.Data.(unsafe.Pointer) == nil {
 			State.loopPlaylist = true
 		} else {
 			State.loopPlaylist = *(*bool)(data.Data.(unsafe.Pointer))
 		}
-		callHooks(HOOK_LOOP_STATUS_CHANGED)
+		hook.CallHooks(hook.HOOK_LOOP_STATUS_CHANGED)
 	default:
 		fmt.Printf("Property %s changed\n", data.Name)
 	}
@@ -46,15 +47,15 @@ func startEventHandler() {
 				duration, err := MpvInstance.GetProperty("duration", mpv.FORMAT_DOUBLE)
 				utils.HandleError(err, "Cannot get duration")
 				State.Duration = duration.(float64)
-				callHooks(HOOK_FILE_LOADED, err, duration)
+				hook.CallHooks(hook.HOOK_FILE_LOADED, err, duration)
 			case mpv.EVENT_PAUSE:
 				State.Paused = true
-				callHooks(HOOK_PLAYBACK_PAUSED)
+				hook.CallHooks(hook.HOOK_PLAYBACK_PAUSED)
 			case mpv.EVENT_END_FILE:
-				callHooks(HOOK_FILE_ENDED)
+				hook.CallHooks(hook.HOOK_FILE_ENDED)
 			case mpv.EVENT_UNPAUSE:
 				State.Paused = false
-				callHooks(HOOK_PLAYBACK_RESUMED)
+				hook.CallHooks(hook.HOOK_PLAYBACK_RESUMED)
 			default:
 				fmt.Println(event)
 			}

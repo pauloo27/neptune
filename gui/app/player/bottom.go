@@ -3,6 +3,7 @@ package player
 import (
 	"time"
 
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/glib"
@@ -45,7 +46,7 @@ func createVolumeController() *gtk.Box {
 	volumeController.SetDrawValue(false)
 	volumeController.SetValue(player.State.Volume)
 
-	player.RegisterHook(player.HOOK_VOLUME_CHANGED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_VOLUME_CHANGED, func(params ...interface{}) {
 		volume := params[0].(float64)
 		glib.IdleAdd(func() {
 			if volume != volumeController.GetValue() {
@@ -69,7 +70,7 @@ func createDurationLabel() *gtk.Label {
 	utils.HandleError(err, "Cannot create label")
 
 	durationLabel.SetHAlign(gtk.ALIGN_END)
-	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_FILE_LOADED, func(params ...interface{}) {
 		duration := params[1].(float64)
 		glib.IdleAdd(func() {
 			durationLabel.SetText(utils.FormatDuration(duration))
@@ -115,14 +116,14 @@ func createSongLabel() *gtk.Label {
 
 	songLabel.SetHAlign(gtk.ALIGN_CENTER)
 
-	player.RegisterHook(player.HOOK_RESULT_FETCH_STARTED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_RESULT_FETCH_STARTED, func(params ...interface{}) {
 		entry := player.State.Fetching
 		glib.IdleAdd(func() {
 			songLabel.SetText(utils.Fmt("Fetching %s...", entry.Title))
 		})
 	})
 
-	player.RegisterHook(player.HOOK_FILE_LOADED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_FILE_LOADED, func(params ...interface{}) {
 		track := player.GetCurrentTrack()
 		glib.IdleAdd(func() {
 			songLabel.SetText(utils.Fmt("%s - %s", track.Album.Artist.Name, track.Title))
@@ -154,12 +155,12 @@ func createButtonsContainer() *gtk.Box {
 
 	pauseButton.SetImage(playingIcon)
 
-	player.RegisterHook(player.HOOK_PLAYBACK_PAUSED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_PLAYBACK_PAUSED, func(params ...interface{}) {
 		glib.IdleAdd(func() {
 			pauseButton.SetImage(pausedIcon)
 		})
 	})
-	player.RegisterHook(player.HOOK_PLAYBACK_RESUMED, func(params ...interface{}) {
+	hook.RegisterHook(hook.HOOK_PLAYBACK_RESUMED, func(params ...interface{}) {
 		glib.IdleAdd(func() {
 			pauseButton.SetImage(playingIcon)
 		})
