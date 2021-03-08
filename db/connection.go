@@ -17,6 +17,7 @@ func Connect(dataFolder string) {
 	utils.HandleError(err, "Cannot connect to db")
 	Database = db
 
+	Database.AutoMigrate(&NeptuneVersion{})
 	Database.AutoMigrate(&Artist{})
 	Database.AutoMigrate(&Album{})
 	Database.AutoMigrate(&Tag{})

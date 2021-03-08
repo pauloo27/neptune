@@ -10,12 +10,11 @@ import (
 	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
 	"github.com/Pauloo27/neptune/utils"
+	"github.com/Pauloo27/neptune/version"
 )
 
-const version = "0.0.1"
-
 func main() {
-	fmt.Printf("Starting neptune v%s\n", version)
+	fmt.Printf("Starting neptune v%s\n", version.VERSION)
 
 	// load data folder
 	home, err := os.UserHomeDir()
@@ -38,6 +37,12 @@ func main() {
 
 	// conect to db
 	db.Connect(dataFolder)
+
+	// save the current version (used in migrations)
+	prevVersion, err := db.LogStartup(version.VERSION)
+	utils.HandleError(err, "Cannot log current version to db")
+
+	version.MigrateFrom(prevVersion)
 
 	// add hook (not useful yet)
 	hook.RegisterHook(hook.HOOK_PLAYER_INITIALIZED, func(params ...interface{}) {

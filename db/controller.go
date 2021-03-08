@@ -198,3 +198,18 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 	}
 	return &track, nil
 }
+
+func LogStartup(version string) (previousVersion string, err error) {
+	var startupLog NeptuneVersion
+	res := Database.Last(&startupLog)
+	if res.Error != nil && !errors.Is(gorm.ErrRecordNotFound, res.Error) {
+		return "", res.Error
+	}
+	previousVersion = startupLog.Version
+
+	if version != previousVersion {
+		newStartupLog := NeptuneVersion{Version: version}
+		err = Database.Create(&newStartupLog).Error
+	}
+	return
+}

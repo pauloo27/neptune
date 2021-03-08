@@ -6,6 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type NeptuneVersion struct {
+	gorm.Model
+	Version string
+}
+
 type Artist struct {
 	gorm.Model
 	MBID string `gorm:"unique"`
