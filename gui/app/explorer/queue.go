@@ -13,7 +13,7 @@ func createQueueEntry(track *db.Track, queueIndex int) *gtk.Box {
 	container, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 1)
 	utils.HandleError(err, "Cannot create box")
 
-	trackLabel, err := gtk.LabelNew(utils.Fmt("%s - %s", track.Album.Artist.Name, track.Title))
+	trackLabel, err := gtk.LabelNew(utils.Fmt("%s - %s", utils.EnforceSize(track.Album.Artist.Name, 15), utils.EnforceSize(track.Title, 50)))
 	utils.HandleError(err, "Cannot create label")
 
 	moveUpButton, err := gtk.ButtonNewFromIconName("go-up", gtk.ICON_SIZE_BUTTON)
