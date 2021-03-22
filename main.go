@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/Pauloo27/neptune/db"
 	"github.com/Pauloo27/neptune/gui/app"
@@ -54,7 +55,12 @@ func main() {
 	player.Initialize(dataFolder)
 
 	hook.RegisterHook(hook.HOOK_GUI_STARTED, func(params ...interface{}) {
-		go trayicon.LoadTrayIcon()
+		go func() {
+			// to avoid random crash
+			// w t f
+			time.Sleep(1 * time.Second)
+			trayicon.LoadTrayIcon()
+		}()
 	})
 
 	// start gui
