@@ -22,6 +22,7 @@ func Start(onExit func()) {
 	win.Connect("destroy", func() {
 		onExit()
 		gtk.MainQuit()
+		os.Exit(0)
 	})
 
 	appWin = win
