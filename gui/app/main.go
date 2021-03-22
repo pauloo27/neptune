@@ -1,8 +1,11 @@
 package app
 
 import (
+	"os"
+
 	"github.com/Pauloo27/neptune/gui/app/explorer"
 	"github.com/Pauloo27/neptune/gui/app/player"
+	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/gtk"
 )
@@ -41,6 +44,18 @@ func Start(onExit func()) {
 	win.SetDefaultSize(800, 600)
 
 	win.ShowAll()
+
+	hook.RegisterHook(hook.HOOK_REQUEST_EXIT, func(params ...interface{}) {
+		onExit()
+		gtk.MainQuit()
+		os.Exit(0)
+	})
+
+	hook.RegisterHook(hook.HOOK_REQUEST_SHOW_HIDE, func(params ...interface{}) {
+		win.SetVisible(!win.GetVisible())
+	})
+
+	hook.CallHooks(hook.HOOK_GUI_STARTED)
 
 	gtk.Main()
 }

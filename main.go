@@ -9,6 +9,7 @@ import (
 	"github.com/Pauloo27/neptune/gui/app"
 	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/player"
+	"github.com/Pauloo27/neptune/trayicon"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/Pauloo27/neptune/version"
 )
@@ -51,6 +52,10 @@ func main() {
 
 	// start backend player
 	player.Initialize(dataFolder)
+
+	hook.RegisterHook(hook.HOOK_GUI_STARTED, func(params ...interface{}) {
+		go trayicon.LoadTrayIcon()
+	})
 
 	// start gui
 	app.Start(func() {
