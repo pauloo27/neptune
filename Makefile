@@ -1,8 +1,13 @@
+BINARY_NAME = neptune 
+
 build:
 	go build -v
 
 run: build
-	./neptune
+	./$(BINARY_NAME) 
+
+install: build
+	sudo cp ./$(BINARY_NAME) /usr/bin/
 
 update_mod:
 	go build -v -mod=mod
@@ -13,4 +18,4 @@ dist:
 
 # (even smaller binary)
 pack: dist
-	upx ./neptune
+	upx ./$(BINARY_NAME)
