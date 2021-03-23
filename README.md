@@ -1,10 +1,24 @@
 # NEPTUNE
 
-A **Work In Progress** YouTube based song player, made with GTK and GoLang.
+A **Work In Progress** YouTube based song player, made with libmpv, GTK and GoLang.
 
 _If you want to listen to song inside your terminal, take a look at 
 [Tuner](https://github.com/Pauloo27/tuner)._
 
+## Installing
+### Arch Linux
+You can install Neptune from the AUR, the package is called `neptune-git`.
+
+### Other distros
+First, install the required packages to build Neptune. They are:
+- the GoLang compiler;
+- mpv (with libmpv);
+- GCC, libgtk 3 and libappindicator for gtk3 (required by the systray package);
+- YouTube-DL (it's not required to compile, but it's required to run);
+
+_if you want a MPRIS integration, install mpv-mpris_.
+
+Then, clone the repository and run `make install`.
 
 ## License
 
