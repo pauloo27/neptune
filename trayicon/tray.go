@@ -13,7 +13,6 @@ func LoadTrayIcon() {
 }
 
 func onExit() {
-	// TODO
 }
 
 func onReady() {
@@ -22,8 +21,8 @@ func onReady() {
 	systray.SetTooltip("Neptune")
 	systray.SetIcon(icon.ICON_DATA)
 
-	mQuit := systray.AddMenuItem("Quit", "Quit")
 	mShowHide := systray.AddMenuItem("Show/Hide player", "Show/Hide player")
+	mQuit := systray.AddMenuItem("Quit", "Quit")
 
 	go func() {
 		for {
