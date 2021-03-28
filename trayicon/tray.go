@@ -2,6 +2,7 @@ package trayicon
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/Pauloo27/neptune/hook"
 	"github.com/Pauloo27/neptune/trayicon/icon"
@@ -9,6 +10,9 @@ import (
 )
 
 func LoadTrayIcon() {
+	if runtime.GOOS == "windows" {
+		return
+	}
 	systray.Run(onReady, onExit)
 }
 
