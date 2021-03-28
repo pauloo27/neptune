@@ -1,5 +1,3 @@
-BINARY_NAME = neptune 
-
 build:
 	go build -v
 
@@ -7,14 +5,11 @@ build:
 windows:
 	PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig CGO_ENABLED=1 CC=x86_64-w64-mingw32-cc GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -v
 
-windows_pack: windows
-	upx ./$(BINARY_NAME).exe
-
 run: build
-	./$(BINARY_NAME) 
+	./neptune 
 
 install: build
-	sudo cp ./$(BINARY_NAME) /usr/bin/
+	sudo cp ./neptune /usr/bin/
 
 update_mod:
 	go build -v -mod=mod
@@ -25,4 +20,7 @@ dist:
 
 # (even smaller binary)
 pack: dist
-	upx ./$(BINARY_NAME)
+	upx ./neptune
+
+windows_pack: windows
+	upx ./neptune.exe
