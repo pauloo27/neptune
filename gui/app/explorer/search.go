@@ -1,7 +1,7 @@
 package explorer
 
 import (
-	"github.com/Pauloo27/neptune/player"
+	"github.com/Pauloo27/neptune/content_manager"
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
 	"github.com/gotk3/gotk3/glib"
@@ -52,7 +52,7 @@ func doSearch(searchTerm string) {
 					// var result, at the end of the for, will be the last array element
 					currentResult := result
 					playButton.Connect("clicked", func() {
-						player.PlayResult(currentResult)
+						content_manager.Stream(currentResult)
 					})
 
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",

@@ -97,6 +97,38 @@ func Initialize(dataFolder string) {
 	hook.CallHooks(hook.HOOK_PLAYER_INITIALIZED, err)
 }
 
+func PlayTrack(track *db.Track) {
+	clearQueue()
+
+	addToTopOfQueue(track)
+	loadFile(track.GetPath())
+
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
+}
+
+func PlayTracks(tracks []*db.Track) {
+	clearQueue()
+
+	if len(tracks) == 0 {
+		return
+	}
+
+	addToTopOfQueue(tracks[0])
+	loadFile(tracks[0].GetPath())
+
+	for _, track := range tracks[1:] {
+		addToQueue(track)
+		appendFile(track.GetPath())
+	}
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
+}
+
+func AddTrackToQueue(track *db.Track) {
+	addToQueue(track)
+	appendFile(track.GetPath())
+	hook.CallHooks(hook.HOOK_QUEUE_UPDATE_FINISHED)
+}
+
 func GetTrackAt(index int) *db.Track {
 	if index >= len(State.Queue) {
 		return nil

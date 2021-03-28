@@ -2,11 +2,9 @@ package db
 
 import (
 	"errors"
-	"path"
 
 	"github.com/Pauloo27/neptune/providers"
 	"github.com/Pauloo27/neptune/providers/youtube"
-	"github.com/Pauloo27/neptune/utils"
 	"gorm.io/gorm"
 )
 
@@ -14,31 +12,21 @@ const (
 	PAGE_SIZE = 50
 )
 
-func PlayTrack(track *Track) error {
+func CountPlayFor(track *Track) error {
 	return Database.Model(track).Update("play_count", gorm.Expr("play_count + 1")).Error
 }
 
-func PlayEntry(result *youtube.YoutubeEntry) (*Track, error) {
-	track, err := TrackFrom(result)
-
-	if err != nil {
-		if errors.Is(gorm.ErrRecordNotFound, err) {
-			return nil, nil
-		}
-		return track, err
-	}
-
-	err = PlayTrack(track)
-
-	return track, err
-}
-
-func TrackFrom(result *youtube.YoutubeEntry) (*Track, error) {
+func FindTrackByEntry(result *youtube.YoutubeEntry) (*Track, error) {
 	var track Track
 	err := Database.
 		Preload("Album.Artist").Preload("Tags.Tag").
 		First(&track, "youtube_id = ?", result.ID).Error
 
+	if err != nil {
+		if errors.Is(gorm.ErrRecordNotFound, err) {
+			return nil, nil
+		}
+	}
 	return &track, err
 }
 
@@ -134,7 +122,7 @@ func ListTags() ([]*Tag, error) {
 	return tags, result.Error
 }
 
-func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*Track, error) {
+func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo, downloaded bool) (*Track, error) {
 	var err error
 	// artist
 	artist := Artist{
@@ -146,6 +134,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 	if err != nil {
 		return nil, err
 	}
+
 	// album
 	album := Album{
 		MBID:   trackInfo.Album.MBID,
@@ -154,17 +143,14 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 	}
 	err = Database.Where(Album{MBID: trackInfo.Album.MBID}).
 		FirstOrCreate(&album).Error
-	// download album art
-	err = utils.DownloadFile(trackInfo.Album.ImageURL,
-		path.Join(DataFolder, "albums", trackInfo.Album.MBID, ".folder.png"),
-	)
-	utils.HandleError(err, "Cannot download album image")
 	if err != nil {
 		return nil, err
 	}
+
 	// track
 	track := Track{
 		MBID:         trackInfo.MBID,
+		Downloaded:   downloaded,
 		YoutubeID:    videoInfo.ID,
 		Album:        album,
 		Title:        trackInfo.Title,
@@ -177,6 +163,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 	if err != nil {
 		return nil, err
 	}
+
 	// tags
 	for _, tagName := range trackInfo.Tags {
 		tag := Tag{
@@ -196,6 +183,7 @@ func StoreTrack(videoInfo *youtube.VideoInfo, trackInfo *providers.TrackInfo) (*
 			return nil, err
 		}
 	}
+
 	return &track, nil
 }
 

@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
+	"runtime"
 )
 
 var userHome string
@@ -16,6 +18,13 @@ func GetUserHome() string {
 	userHome, err = os.UserHomeDir()
 	HandleError(err, "Cannot get user home")
 	return userHome
+}
+
+func GetTmpFolder() string {
+	if runtime.GOOS == "windows" {
+		return path.Join(GetUserHome(), "AppData", "Local", "Temp")
+	}
+	return "/tmp/"
 }
 
 func DownloadFile(fileURL, targetFilePath string) error {

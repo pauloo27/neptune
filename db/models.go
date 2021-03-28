@@ -3,6 +3,7 @@ package db
 import (
 	"path"
 
+	"github.com/Pauloo27/neptune/utils"
 	"gorm.io/gorm"
 )
 
@@ -41,6 +42,7 @@ type TrackTag struct {
 type Track struct {
 	gorm.Model
 	MBID         string
+	Downloaded   bool
 	YoutubeID    string `gorm:"unique"`
 	AlbumID      uint
 	Album        Album
@@ -51,10 +53,25 @@ type Track struct {
 	Tags         []TrackTag
 }
 
+func (t *Track) GetLocalPath() string {
+	return path.Join(DataFolder, "albums", utils.Fmt("%d", t.Album.ID), t.YoutubeID+".m4a")
+}
+
+func (t *Track) GetYouTubeURL() string {
+	return utils.Fmt("https://www.youtube.com/watch?v=%s", t.YoutubeID)
+}
+
 func (t *Track) GetPath() string {
-	return path.Join(DataFolder, "albums", t.Album.MBID, t.YoutubeID+".m4a")
+	if t.Downloaded {
+		return t.GetLocalPath()
+	}
+	return t.GetYouTubeURL()
 }
 
 func (a *Album) GetAlbumArtPath() string {
-	return path.Join(DataFolder, "albums", a.MBID, ".folder.png")
+	return path.Join(a.GetAlbumPath(), ".folder.png")
+}
+
+func (a *Album) GetAlbumPath() string {
+	return path.Join(DataFolder, "albums", utils.Fmt("%d", a.ID))
 }

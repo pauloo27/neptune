@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	fmt.Printf("Starting neptune v%s\n", version.VERSION)
+	fmt.Printf("Starting neptune %s\n", version.VERSION)
 
 	// load data folder
 	home, err := os.UserHomeDir()
