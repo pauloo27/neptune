@@ -20,9 +20,7 @@ func Stream(result *youtube.YoutubeEntry) {
 	}
 	go func() {
 		videoInfo, err := fetchVideoInfo(result, false)
-		if err != nil {
-			utils.HandleError(err, "Cannot fetch video info")
-		}
+		utils.HandleError(err, "Cannot fetch video info")
 
 		var trackInfo *providers.TrackInfo
 		if videoInfo.Artist == "" || videoInfo.Track == "" {
@@ -50,9 +48,7 @@ func Stream(result *youtube.YoutubeEntry) {
 		}
 
 		track, err := db.StoreTrack(videoInfo, trackInfo, false)
-		if err != nil {
-			utils.HandleError(err, "Cannot store track to db")
-		}
+		utils.HandleError(err, "Cannot store track to db")
 
 		// create album folder
 		os.MkdirAll(track.Album.GetAlbumPath(), 0744)
