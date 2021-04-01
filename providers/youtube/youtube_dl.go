@@ -1,6 +1,7 @@
 package youtube
 
 import (
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -52,7 +53,12 @@ func FetchInfoAndDownload(result *YoutubeEntry, filePath string) (*VideoInfo, er
 
 	buffer, err := cmd.Output()
 	if err != nil {
-		return nil, err
+		if runtime.GOOS != "windows" {
+			return nil, err
+		}
+		if stat, err := os.Stat(filePath); err != nil || stat.Size() <= 1 {
+			return nil, err
+		}
 	}
 
 	return parseVideoInfo(buffer), nil
