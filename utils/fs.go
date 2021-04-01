@@ -5,26 +5,28 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"runtime"
 )
 
 var userHome string
 
 func GetUserHome() string {
-	if userHome != "" {
-		return userHome
+	if userHome == "" {
+		var err error
+		userHome, err = os.UserHomeDir()
+		HandleError(err, "Cannot get user home")
 	}
-	var err error
-	userHome, err = os.UserHomeDir()
-	HandleError(err, "Cannot get user home")
 	return userHome
 }
 
+var tmpFolder string
+
 func GetTmpFolder() string {
-	if runtime.GOOS == "windows" {
-		return path.Join(GetUserHome(), "AppData", "Local", "Temp")
+	if tmpFolder == "" {
+		tmpFolder = path.Join(GetUserHome(), ".cache", "neptune", "tmp")
+		err := os.MkdirAll(tmpFolder, 0744)
+		HandleError(err, "Cannot create tmp folder "+tmpFolder)
 	}
-	return "/tmp/"
+	return tmpFolder
 }
 
 func DownloadFile(fileURL, targetFilePath string) error {

@@ -1,6 +1,8 @@
 package explorer
 
 import (
+	"runtime"
+
 	"github.com/Pauloo27/neptune/content_manager"
 	"github.com/Pauloo27/neptune/providers/youtube"
 	"github.com/Pauloo27/neptune/utils"
@@ -52,7 +54,12 @@ func doSearch(searchTerm string) {
 					// var result, at the end of the for, will be the last array element
 					currentResult := result
 					playButton.Connect("clicked", func() {
-						content_manager.Stream(currentResult)
+						if runtime.GOOS == "windows" {
+							content_manager.Download(currentResult)
+						} else {
+							content_manager.Download(currentResult)
+							//content_manager.Stream(currentResult)
+						}
 					})
 
 					label, err := gtk.LabelNew(utils.Fmt("%s - %s | %s",
