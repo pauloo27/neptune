@@ -18,7 +18,7 @@ func Start(onExit func()) {
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	utils.HandleError(err, "Cannot create window")
 
-	win.SetTitle("My Tune")
+	win.SetTitle("Neptune")
 	win.Connect("destroy", func() {
 		onExit()
 		gtk.MainQuit()
