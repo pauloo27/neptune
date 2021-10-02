@@ -11,8 +11,8 @@ run: build
 install: build
 	sudo cp ./neptune /usr/bin/
 
-update_mod:
-	go build -v -mod=mod
+tidy:
+	go mod tidy
 
 # (build but with a smaller binary)
 dist:
